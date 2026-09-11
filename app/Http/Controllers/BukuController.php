@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 
-
 class BukuController extends Controller
 {
     /**
@@ -38,7 +37,6 @@ class BukuController extends Controller
             );
         }
 
-
         /*
         |--------------------------------------------------------------------------
         | STATISTIK BUKU
@@ -57,7 +55,6 @@ class BukuController extends Controller
             'stok',
             0
         )->count();
-
 
         $bukus = $query
             ->latest()
@@ -89,7 +86,7 @@ class BukuController extends Controller
             'nama_kategori'
         )->get();
 
-                $user = Auth::user();
+        $user = Auth::user();
 
         return view('buku.create', compact(
             'kategoris',
