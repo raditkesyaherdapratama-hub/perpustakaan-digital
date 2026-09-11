@@ -24,8 +24,13 @@
 
                 <div class="flex h-20 items-center gap-3 border-b border-primary-800 px-6">
 
-                    <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-primary-600 text-2xl">
-                        📚
+                    {{-- LOGO MI AL FALAHIYYAH --}}
+                    <div class="flex h-12 w-12 shrink-0 items-center justify-center">
+                        <img
+                            src="{{ asset('images/logo-mi-al-falahiyyah-HD (2).png') }}"
+                            alt="Logo MI Al Falahiyyah Rajeg"
+                            class="h-11 w-11 object-contain"
+                        >
                     </div>
 
                     <div>
@@ -229,9 +234,7 @@
                     <div class="flex items-center gap-3">
 
 
-                        {{-- ========================================= --}}
                         {{-- JAM WIB --}}
-                        {{-- ========================================= --}}
                         <div
                             class="flex items-center gap-3 rounded-2xl border border-primary-100 bg-white px-4 py-2 shadow-sm"
                         >
@@ -289,9 +292,7 @@
                         </div>
 
 
-                        {{-- ========================================= --}}
                         {{-- AVATAR --}}
-                        {{-- ========================================= --}}
                         <div>
 
                             <a href="{{ route('profile.index') }}">
@@ -329,19 +330,13 @@
     @endif
 
 
-    {{-- ========================================= --}}
     {{-- JAVASCRIPT JAM WIB --}}
-    {{-- ========================================= --}}
     <script>
 
         function updateWIBClock() {
 
             const now = new Date();
 
-
-            // ================================
-            // WAKTU WIB
-            // ================================
             const timeOptions = {
 
                 timeZone: 'Asia/Jakarta',
@@ -356,10 +351,6 @@
 
             };
 
-
-            // ================================
-            // TANGGAL WIB
-            // ================================
             const dateOptions = {
 
                 timeZone: 'Asia/Jakarta',
@@ -374,41 +365,27 @@
 
             };
 
-
-            // ================================
-            // FORMAT WAKTU
-            // ================================
             const time = new Intl.DateTimeFormat(
                 'id-ID',
                 timeOptions
             ).format(now);
 
-
-            // ================================
-            // FORMAT TANGGAL
-            // ================================
             const date = new Intl.DateTimeFormat(
                 'id-ID',
                 dateOptions
             ).format(now);
 
-
-            // ================================
-            // TAMPILKAN JAM
-            // ================================
             const clockElement =
                 document.getElementById('wib-clock');
 
             const dateElement =
                 document.getElementById('wib-date');
 
-
             if (clockElement) {
 
                 clockElement.textContent = time;
 
             }
-
 
             if (dateElement) {
 
@@ -418,12 +395,8 @@
 
         }
 
-
-        // Jalankan saat halaman pertama kali dibuka
         updateWIBClock();
 
-
-        // Update setiap 1 detik
         setInterval(updateWIBClock, 1000);
 
     </script>
