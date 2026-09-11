@@ -209,8 +209,9 @@
             <main class="min-w-0 flex-1">
 
                 {{-- HEADER --}}
-                <header class="flex h-20 items-center justify-between border-b border-primary-100 bg-white px-6 shadow-sm">
+                <header class="flex min-h-20 items-center justify-between gap-4 border-b border-primary-100 bg-white px-4 py-4 shadow-sm sm:px-6">
 
+                    {{-- WELCOME --}}
                     <div>
 
                         <p class="text-sm text-slate-400">
@@ -224,14 +225,87 @@
                     </div>
 
 
-                    {{-- AVATAR --}}
-                    <div>
-                        <a href="{{ route('profile.index') }}">
-                            <img
-                                src="{{ asset('storage/' . Auth::user()->profile_photo) }}"
-                                class="w-14 h-14 rounded-full object-cover border-2 border-primary-200"
-                                alt="Profile">
-                        </a>
+                    {{-- RIGHT HEADER --}}
+                    <div class="flex items-center gap-3">
+
+
+                        {{-- ========================================= --}}
+                        {{-- JAM WIB --}}
+                        {{-- ========================================= --}}
+                        <div
+                            class="flex items-center gap-3 rounded-2xl border border-primary-100 bg-white px-4 py-2 shadow-sm"
+                        >
+
+                            {{-- STATUS --}}
+                            <div
+                                class="relative flex h-8 w-8 items-center justify-center rounded-xl bg-primary-50"
+                            >
+
+                                <span class="relative flex h-2.5 w-2.5">
+
+                                    <span
+                                        class="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary-400 opacity-50"
+                                    ></span>
+
+                                    <span
+                                        class="relative inline-flex h-2.5 w-2.5 rounded-full bg-primary-500"
+                                    ></span>
+
+                                </span>
+
+                            </div>
+
+
+                            {{-- TIME --}}
+                            <div>
+
+                                <div class="flex items-center gap-2 leading-none">
+
+                                    <span
+                                        id="wib-clock"
+                                        class="text-lg font-extrabold tracking-tight text-primary-900"
+                                    >
+                                        00:00:00
+                                    </span>
+
+                                    <span
+                                        class="rounded-md bg-primary-50 px-1.5 py-1 text-[9px] font-extrabold tracking-wider text-primary-600"
+                                    >
+                                        WIB
+                                    </span>
+
+                                </div>
+
+
+                                <p
+                                    id="wib-date"
+                                    class="mt-1 text-[9px] font-medium text-slate-400"
+                                >
+                                    Memuat tanggal...
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        {{-- ========================================= --}}
+                        {{-- AVATAR --}}
+                        {{-- ========================================= --}}
+                        <div>
+
+                            <a href="{{ route('profile.index') }}">
+
+                                <img
+                                    src="{{ asset('storage/' . Auth::user()->profile_photo) }}"
+                                    class="h-14 w-14 rounded-full border-2 border-primary-200 object-cover"
+                                    alt="Profile"
+                                >
+
+                            </a>
+
+                        </div>
+
                     </div>
 
                 </header>
@@ -253,6 +327,106 @@
         @yield('content')
 
     @endif
+
+
+    {{-- ========================================= --}}
+    {{-- JAVASCRIPT JAM WIB --}}
+    {{-- ========================================= --}}
+    <script>
+
+        function updateWIBClock() {
+
+            const now = new Date();
+
+
+            // ================================
+            // WAKTU WIB
+            // ================================
+            const timeOptions = {
+
+                timeZone: 'Asia/Jakarta',
+
+                hour: '2-digit',
+
+                minute: '2-digit',
+
+                second: '2-digit',
+
+                hour12: false
+
+            };
+
+
+            // ================================
+            // TANGGAL WIB
+            // ================================
+            const dateOptions = {
+
+                timeZone: 'Asia/Jakarta',
+
+                weekday: 'long',
+
+                day: '2-digit',
+
+                month: 'long',
+
+                year: 'numeric'
+
+            };
+
+
+            // ================================
+            // FORMAT WAKTU
+            // ================================
+            const time = new Intl.DateTimeFormat(
+                'id-ID',
+                timeOptions
+            ).format(now);
+
+
+            // ================================
+            // FORMAT TANGGAL
+            // ================================
+            const date = new Intl.DateTimeFormat(
+                'id-ID',
+                dateOptions
+            ).format(now);
+
+
+            // ================================
+            // TAMPILKAN JAM
+            // ================================
+            const clockElement =
+                document.getElementById('wib-clock');
+
+            const dateElement =
+                document.getElementById('wib-date');
+
+
+            if (clockElement) {
+
+                clockElement.textContent = time;
+
+            }
+
+
+            if (dateElement) {
+
+                dateElement.textContent = date;
+
+            }
+
+        }
+
+
+        // Jalankan saat halaman pertama kali dibuka
+        updateWIBClock();
+
+
+        // Update setiap 1 detik
+        setInterval(updateWIBClock, 1000);
+
+    </script>
 
 </body>
 
