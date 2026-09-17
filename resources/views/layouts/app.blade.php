@@ -11,10 +11,19 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
+    {{-- ALPINE JS UNTUK DROPDOWN NOTIFIKASI --}}
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <style>
+        [x-cloak] {
+            display: none !important;
+        }
+    </style>
+
 </head>
 
 <body class="font-sans bg-primary-50 text-gray-800 antialiased">
-    
+
     @if (auth()->check() && !request()->routeIs('login', 'register'))
 
         <div class="flex min-h-screen">
@@ -26,11 +35,13 @@
 
                     {{-- LOGO MI AL FALAHIYYAH --}}
                     <div class="flex h-12 w-12 shrink-0 items-center justify-center">
+
                         <img
                             src="{{ asset('images/logo-mi-al-falahiyyah-HD (2).png') }}"
                             alt="Logo MI Al Falahiyyah Rajeg"
                             class="h-11 w-11 object-contain"
                         >
+
                     </div>
 
                     <div>
@@ -233,10 +244,183 @@
                     {{-- RIGHT HEADER --}}
                     <div class="flex items-center gap-3">
 
+                        {{-- NOTIFICATION --}}
+                        <div
+                            x-data="{ open: false }"
+                            class="relative"
+                        >
+
+                            <button
+                                type="button"
+                                @click="open = !open"
+                                class="relative flex h-11 w-11 items-center justify-center rounded-2xl border border-primary-100 bg-white text-primary-700 shadow-sm transition hover:border-primary-200 hover:bg-primary-50"
+                            >
+
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke-width="1.8"
+                                    stroke="currentColor"
+                                    class="h-5 w-5"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9a6 6 0 0 0-12 0v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.09 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"
+                                    />
+                                </svg>
+
+                                @if (auth()->user()->unreadNotifications->count() > 0)
+
+                                    <span class="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white ring-2 ring-white">
+                                        {{ auth()->user()->unreadNotifications->count() > 9 ? '9+' : auth()->user()->unreadNotifications->count() }}
+                                    </span>
+
+                                @endif
+
+                            </button>
+
+
+                            {{-- DROPDOWN NOTIFICATION --}}
+                            <div
+                                x-show="open"
+                                x-cloak
+                                @click.outside="open = false"
+                                x-transition
+                                class="absolute right-0 z-50 mt-3 w-80 overflow-hidden rounded-2xl border border-primary-100 bg-white shadow-2xl"
+                            >
+
+                                {{-- HEADER DROPDOWN --}}
+                                <div class="flex items-center justify-between border-b border-slate-100 px-4 py-4">
+
+                                    <div>
+
+                                        <h3 class="text-sm font-bold text-slate-800">
+                                            Notifikasi
+                                        </h3>
+
+                                        <p class="mt-1 text-xs text-slate-400">
+                                            Informasi terbaru sistem
+                                        </p>
+
+                                    </div>
+
+                                    @if (auth()->user()->unreadNotifications->count() > 0)
+
+                                        <form
+                                            action="{{ route('notifications.readAll') }}"
+                                            method="POST"
+                                        >
+
+                                            @csrf
+
+                                            <button
+                                                type="submit"
+                                                class="text-[11px] font-semibold text-primary-600 hover:text-primary-800"
+                                            >
+                                                Tandai dibaca
+                                            </button>
+
+                                        </form>
+
+                                    @endif
+
+                                </div>
+
+
+                                {{-- LIST NOTIFICATION --}}
+                                <div class="max-h-96 overflow-y-auto">
+
+                                    @forelse (auth()->user()->notifications->take(5) as $notification)
+
+                                        @php
+                                            $data = $notification->data;
+
+                                            $tipe = $data['tipe'] ?? 'info';
+
+                                            $iconClass = match ($tipe) {
+                                                'success' => 'bg-emerald-100 text-emerald-600',
+                                                'warning' => 'bg-amber-100 text-amber-600',
+                                                'danger' => 'bg-red-100 text-red-600',
+                                                default => 'bg-blue-100 text-blue-600',
+                                            };
+
+                                            $icon = match ($tipe) {
+                                                'success' => '✓',
+                                                'warning' => '!',
+                                                'danger' => '×',
+                                                default => 'i',
+                                            };
+                                        @endphp
+
+                                        <a
+                                            href="{{ $data['url'] ?? '#' }}"
+                                            class="flex gap-3 border-b border-slate-100 px-4 py-4 transition hover:bg-primary-50 {{ $notification->read_at ? 'opacity-60' : 'bg-primary-50/40' }}"
+                                        >
+
+                                            <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-sm font-bold {{ $iconClass }}">
+                                                {{ $icon }}
+                                            </div>
+
+                                            <div class="min-w-0 flex-1">
+
+                                                <div class="flex items-start justify-between gap-2">
+
+                                                    <p class="text-xs font-bold text-slate-800">
+                                                        {{ $data['judul'] ?? 'Notifikasi' }}
+                                                    </p>
+
+                                                    @if (!$notification->read_at)
+
+                                                        <span class="mt-1 h-2 w-2 shrink-0 rounded-full bg-primary-500"></span>
+
+                                                    @endif
+
+                                                </div>
+
+                                                <p class="mt-1 text-xs leading-relaxed text-slate-500">
+                                                    {{ $data['pesan'] ?? '' }}
+                                                </p>
+
+                                                <p class="mt-2 text-[10px] text-slate-400">
+                                                    {{ $notification->created_at->diffForHumans() }}
+                                                </p>
+
+                                            </div>
+
+                                        </a>
+
+                                    @empty
+
+                                        <div class="px-5 py-10 text-center">
+
+                                            <div class="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary-50 text-2xl">
+                                                🔔
+                                            </div>
+
+                                            <p class="text-sm font-semibold text-slate-600">
+                                                Belum ada notifikasi
+                                            </p>
+
+                                            <p class="mt-1 text-xs text-slate-400">
+                                                Notifikasi terbaru akan muncul di sini.
+                                            </p>
+
+                                        </div>
+
+                                    @endforelse
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
 
                         {{-- JAM WIB --}}
                         <div
-                            class="flex items-center gap-3 rounded-2xl border border-primary-100 bg-white px-4 py-2 shadow-sm"
+                            class="hidden items-center gap-3 rounded-2xl border border-primary-100 bg-white px-4 py-2 shadow-sm sm:flex"
                         >
 
                             {{-- STATUS --}}
@@ -340,13 +524,9 @@
             const timeOptions = {
 
                 timeZone: 'Asia/Jakarta',
-
                 hour: '2-digit',
-
                 minute: '2-digit',
-
                 second: '2-digit',
-
                 hour12: false
 
             };
@@ -354,13 +534,9 @@
             const dateOptions = {
 
                 timeZone: 'Asia/Jakarta',
-
                 weekday: 'long',
-
                 day: '2-digit',
-
                 month: 'long',
-
                 year: 'numeric'
 
             };

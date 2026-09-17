@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
+
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AnggotaController;
 use App\Http\Controllers\BukuController;
@@ -12,10 +14,15 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\LaporanController;
 
 
+/*
+|--------------------------------------------------------------------------
+| ROOT
+|--------------------------------------------------------------------------
+*/
 
-        Route::get('/', function () {
-        return redirect()->route('login');
-        });
+Route::get('/', function () {
+    return redirect()->route('login');
+});
 
 
 /*
@@ -24,25 +31,25 @@ use App\Http\Controllers\LaporanController;
 |--------------------------------------------------------------------------
 */
 
-        Route::get('/login', [
-        AuthController::class,
-        'showLogin'
-        ])->name('login');
+Route::get('/login', [
+    AuthController::class,
+    'showLogin'
+])->name('login');
 
-        Route::post('/login', [
-        AuthController::class,
-        'login'
-        ])->name('login.process');
+Route::post('/login', [
+    AuthController::class,
+    'login'
+])->name('login.process');
 
-        Route::get('/register', [
-        AuthController::class,
-        'showRegister'
-        ])->name('register');
+Route::get('/register', [
+    AuthController::class,
+    'showRegister'
+])->name('register');
 
-        Route::post('/register', [
-        AuthController::class,
-        'register'
-        ])->name('register.process');
+Route::post('/register', [
+    AuthController::class,
+    'register'
+])->name('register.process');
 
 
 /*
@@ -51,38 +58,77 @@ use App\Http\Controllers\LaporanController;
 |--------------------------------------------------------------------------
 */
 
-        Route::middleware('auth')->group(function () {
+Route::middleware('auth')->group(function () {
 
-        Route::post('/logout', [
+    /*
+    |--------------------------------------------------------------------------
+    | LOGOUT
+    |--------------------------------------------------------------------------
+    */
+
+    Route::post('/logout', [
         AuthController::class,
         'logout'
-        ])->name('logout');
+    ])->name('logout');
 
-        Route::get('/profile', [
+
+    /*
+    |--------------------------------------------------------------------------
+    | PROFILE
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get('/profile', [
         ProfileController::class,
         'index'
-        ])->name('profile.index');
+    ])->name('profile.index');
 
-        Route::put('/profile', [
+    Route::put('/profile', [
         ProfileController::class,
         'update'
-        ])->name('profile.update');
+    ])->name('profile.update');
 
-        Route::put('/profile/password', [
+    Route::put('/profile/password', [
         ProfileController::class,
         'updatePassword'
-        ])->name('profile.password');
+    ])->name('profile.password');
 
-        Route::post('/buku/{buku}/pinjam', [
+
+    /*
+    |--------------------------------------------------------------------------
+    | NOTIFICATIONS
+    |--------------------------------------------------------------------------
+    */
+
+    Route::post('/notifications/read-all', function (Request $request) {
+        $request->user()->unreadNotifications->markAsRead();
+
+        return back();
+    })->name('notifications.readAll');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | PEMINJAMAN USER
+    |--------------------------------------------------------------------------
+    */
+
+    Route::post('/buku/{buku}/pinjam', [
         PeminjamanController::class,
         'pinjam'
-        ])->name('peminjaman.pinjam');
+    ])->name('peminjaman.pinjam');
 
 
-        Route::get('/buku', [
+    /*
+    |--------------------------------------------------------------------------
+    | KOLEKSI BUKU
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get('/buku', [
         BukuController::class,
         'index'
-        ])->name('buku.index');
+    ])->name('buku.index');
 
 
     /*
@@ -91,25 +137,25 @@ use App\Http\Controllers\LaporanController;
     |--------------------------------------------------------------------------
     */
 
-        Route::middleware('role:admin')->group(function () {
+    Route::middleware('role:admin')->group(function () {
 
         /*
-|--------------------------------------------------------------------------
-| LAPORAN
-|--------------------------------------------------------------------------
-*/
+        |--------------------------------------------------------------------------
+        | LAPORAN
+        |--------------------------------------------------------------------------
+        */
 
         Route::get('/laporan', [
-        LaporanController::class,
-        'index'
+            LaporanController::class,
+            'index'
         ])->name('laporan.index');
 
         Route::get('/laporan/print', [
-        LaporanController::class,
-        'print'
+            LaporanController::class,
+            'print'
         ])->name('laporan.print');
 
-        
+
         /*
         |--------------------------------------------------------------------------
         | PENGEMBALIAN
@@ -258,10 +304,10 @@ use App\Http\Controllers\LaporanController;
     |--------------------------------------------------------------------------
     */
 
-        Route::get('/buku/{buku}', [
+    Route::get('/buku/{buku}', [
         BukuController::class,
         'show'
-        ])->name('buku.show');
+    ])->name('buku.show');
 
 
     /*
@@ -270,16 +316,16 @@ use App\Http\Controllers\LaporanController;
     |--------------------------------------------------------------------------
     */
 
-        Route::middleware('role:user')->group(function () {
+    Route::middleware('role:user')->group(function () {
 
         Route::get('/user/dashboard', [
-        DashboardController::class,
-        'user'
+            DashboardController::class,
+            'user'
         ])->name('user.dashboard');
 
         Route::get('/user/peminjaman', [
-        PeminjamanController::class,
-        'riwayat'
+            PeminjamanController::class,
+            'riwayat'
         ])->name('user.peminjaman');
 
     });
