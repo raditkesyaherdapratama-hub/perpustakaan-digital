@@ -4,13 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\Buku;
 use App\Models\Peminjaman;
+use App\Models\User;
+use App\Notifications\PeminjamanNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class PeminjamanController extends Controller
 {
     /**
-     * Proses Peminjaman Buku
+     * Proses Pengajuan Peminjaman Buku
      */
     public function pinjam(Request $request, Buku $buku)
     {
@@ -49,20 +51,20 @@ class PeminjamanController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | CEK SUDAH MEMINJAM BUKU INI
+        | CEK SUDAH MENGAJUKAN / MEMINJAM BUKU INI
         |--------------------------------------------------------------------------
         */
 
         $sudahMeminjam = Peminjaman::where('user_id', $user->id)
             ->where('buku_id', $buku->id)
-            ->where('status', 'dipinjam')
+            ->whereIn('status', ['menunggu', 'dipinjam'])
             ->exists();
 
         if ($sudahMeminjam) {
 
             return back()->with(
                 'error',
-                'Kamu masih meminjam buku ini.'
+                'Kamu sudah mengajukan atau sedang meminjam buku ini.'
             );
 
         }
@@ -70,7 +72,7 @@ class PeminjamanController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | MAKSIMAL 3 BUKU
+        | MAKSIMAL 3 BUKU YANG SEDANG DIPINJAM
         |--------------------------------------------------------------------------
         */
 
@@ -126,20 +128,18 @@ class PeminjamanController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | SIMPAN PEMINJAMAN
+        | SIMPAN PENGAJUAN PEMINJAMAN
         |--------------------------------------------------------------------------
         */
 
-        DB::transaction(function () use (
+        $peminjaman = DB::transaction(function () use (
             $buku,
             $user,
             $tanggalPinjam,
             $tanggalJatuhTempo
         ) {
 
-            $buku->decrement('stok');
-
-            Peminjaman::create([
+            return Peminjaman::create([
 
                 'user_id' => $user->id,
 
@@ -149,19 +149,56 @@ class PeminjamanController extends Controller
 
                 'tanggal_jatuh_tempo' => $tanggalJatuhTempo->toDateString(),
 
-                'status' => 'dipinjam',
+                'status' => 'menunggu',
 
             ]);
 
         });
 
 
+        /*
+        |--------------------------------------------------------------------------
+        | NOTIFIKASI UNTUK USER
+        |--------------------------------------------------------------------------
+        */
+
+        $user->notify(new PeminjamanNotification(
+            'Pengajuan Peminjaman Dikirim',
+            'Pengajuan peminjaman buku "' . $buku->judul_buku . '" sedang menunggu persetujuan admin.',
+            'info',
+            route('user.peminjaman')
+        ));
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | NOTIFIKASI UNTUK ADMIN
+        |--------------------------------------------------------------------------
+        */
+
+        $admins = User::where('role', 'admin')->get();
+
+        foreach ($admins as $admin) {
+
+            $admin->notify(new PeminjamanNotification(
+                'Pengajuan Peminjaman Baru',
+                $user->name . ' mengajukan peminjaman buku "' . $buku->judul_buku . '". Silakan periksa pengajuan tersebut.',
+                'warning',
+                route('pengembalian.index')
+            ));
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | PESAN BERHASIL
+        |--------------------------------------------------------------------------
+        */
+
         return back()->with(
             'success',
-            'Buku berhasil dipinjam selama '
-            . $lamaPinjam .
-            ' hari. Batas pengembalian: '
-            . $tanggalJatuhTempo->format('d M Y')
+            'Pengajuan peminjaman berhasil dikirim. Silakan tunggu persetujuan admin.'
         );
     }
 
@@ -169,7 +206,7 @@ class PeminjamanController extends Controller
     /**
      * Riwayat Peminjaman User
      */
-        public function riwayat()
+    public function riwayat()
     {
         $peminjamans = Peminjaman::with([
             'buku.kategori',

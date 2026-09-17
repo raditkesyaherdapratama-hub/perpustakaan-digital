@@ -158,7 +158,7 @@ Route::middleware('auth')->group(function () {
 
         /*
         |--------------------------------------------------------------------------
-        | PENGEMBALIAN
+        | PENGEMBALIAN DAN PERSETUJUAN PEMINJAMAN
         |--------------------------------------------------------------------------
         */
 
@@ -166,6 +166,28 @@ Route::middleware('auth')->group(function () {
             PengembalianController::class,
             'index'
         ])->name('pengembalian.index');
+
+        /*
+        | Pengajuan peminjaman disetujui admin
+        */
+
+        Route::post('/pengembalian/{peminjaman}/setujui', [
+            PengembalianController::class,
+            'setujui'
+        ])->name('pengembalian.setujui');
+
+        /*
+        | Pengajuan peminjaman ditolak admin
+        */
+
+        Route::post('/pengembalian/{peminjaman}/tolak', [
+            PengembalianController::class,
+            'tolak'
+        ])->name('pengembalian.tolak');
+
+        /*
+        | Proses pengembalian buku
+        */
 
         Route::post('/pengembalian/{peminjaman}', [
             PengembalianController::class,

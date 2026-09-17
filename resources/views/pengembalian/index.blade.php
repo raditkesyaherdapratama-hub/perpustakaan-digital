@@ -15,7 +15,6 @@
 
                 <div>
 
-                    {{-- LABEL --}}
                     <div class="mb-3 inline-flex items-center gap-2 rounded-full border border-primary-200 bg-primary-100 px-3 py-1.5">
 
                         <span class="relative flex h-2 w-2">
@@ -29,19 +28,16 @@
 
                     </div>
 
-
-                    {{-- TITLE --}}
                     <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 md:text-4xl">
-                        Pengembalian Buku
+                        Pengajuan & Pengembalian Buku
                     </h1>
 
                     <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-500">
-                        Kelola pengembalian buku dan pastikan seluruh data
-                        perpustakaan tetap akurat.
+                        Kelola pengajuan peminjaman, persetujuan, penolakan,
+                        dan pengembalian buku perpustakaan.
                     </p>
 
                 </div>
-
 
                 {{-- SYSTEM STATUS --}}
                 <div class="inline-flex w-fit items-center gap-3 rounded-2xl border border-primary-100 bg-white px-5 py-3 shadow-sm">
@@ -89,7 +85,7 @@
                 <div>
 
                     <p class="text-sm font-bold text-emerald-800">
-                        Pengembalian Berhasil
+                        Proses Berhasil
                     </p>
 
                     <p class="mt-0.5 text-sm text-emerald-700">
@@ -136,11 +132,9 @@
         {{-- ========================================================= --}}
         <div class="mb-8 grid gap-5 md:grid-cols-3">
 
-
             {{-- CARD 1 --}}
             <div class="group relative overflow-hidden rounded-3xl border border-primary-100 bg-white p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-primary-200 hover:shadow-lg">
 
-                {{-- Decorative --}}
                 <div class="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-primary-50 transition duration-500 group-hover:scale-125"></div>
 
                 <div class="relative">
@@ -148,25 +142,25 @@
                     <div class="mb-6 flex items-center justify-between">
 
                         <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary-100 text-2xl ring-4 ring-primary-50">
-                            📚
+                            ⏳
                         </div>
 
-                        <span class="rounded-full border border-primary-200 bg-primary-50 px-3 py-1 text-[11px] font-bold tracking-wider text-primary-700">
-                            AKTIF
+                        <span class="rounded-full border border-orange-200 bg-orange-50 px-3 py-1 text-[11px] font-bold tracking-wider text-orange-700">
+                            MENUNGGU
                         </span>
 
                     </div>
 
                     <p class="text-sm font-medium text-slate-500">
-                        Peminjaman Aktif
+                        Pengajuan Menunggu
                     </p>
 
-                    <h2 class="mt-2 text-3xl font-extrabold text-primary-800">
-                        {{ $peminjamans->total() }}
+                    <h2 class="mt-2 text-3xl font-extrabold text-orange-600">
+                        {{ $peminjamans->where('status', 'menunggu')->count() }}
                     </h2>
 
                     <p class="mt-2 text-xs text-slate-400">
-                        Buku yang belum dikembalikan
+                        Menunggu persetujuan admin
                     </p>
 
                 </div>
@@ -184,25 +178,25 @@
                     <div class="mb-6 flex items-center justify-between">
 
                         <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-100 text-2xl ring-4 ring-emerald-50">
-                            🔄
+                            📚
                         </div>
 
                         <span class="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-[11px] font-bold tracking-wider text-emerald-700">
-                            RETURN
+                            AKTIF
                         </span>
 
                     </div>
 
                     <p class="text-sm font-medium text-slate-500">
-                        Status Pengembalian
+                        Buku Sedang Dipinjam
                     </p>
 
                     <h2 class="mt-2 text-3xl font-extrabold text-emerald-700">
-                        READY
+                        {{ $peminjamans->where('status', 'dipinjam')->count() }}
                     </h2>
 
                     <p class="mt-2 text-xs text-slate-400">
-                        Siap memproses pengembalian
+                        Belum dikembalikan oleh user
                     </p>
 
                 </div>
@@ -213,7 +207,6 @@
             {{-- CARD 3 --}}
             <div class="group relative overflow-hidden rounded-3xl bg-primary-800 p-6 text-white shadow-lg transition duration-300 hover:-translate-y-1 hover:bg-primary-900 hover:shadow-xl">
 
-                {{-- Glow --}}
                 <div class="absolute -right-12 -top-12 h-36 w-36 rounded-full bg-primary-500/20 blur-2xl"></div>
 
                 <div class="relative">
@@ -254,7 +247,6 @@
         {{-- ========================================================= --}}
         <div class="overflow-hidden rounded-3xl border border-primary-100 bg-white shadow-sm">
 
-
             {{-- TABLE HEADER --}}
             <div class="border-b border-primary-100 bg-white px-6 py-5">
 
@@ -269,17 +261,16 @@
                         <div>
 
                             <h2 class="text-lg font-extrabold text-slate-900">
-                                Daftar Peminjaman Aktif
+                                Daftar Pengajuan & Peminjaman
                             </h2>
 
                             <p class="mt-1 text-sm text-slate-500">
-                                Proses pengembalian buku yang sedang dipinjam
+                                Kelola status peminjaman dan pengembalian buku
                             </p>
 
                         </div>
 
                     </div>
-
 
                     {{-- TOTAL --}}
                     <div class="flex items-center gap-3 rounded-xl border border-primary-100 bg-primary-50 px-4 py-2.5">
@@ -304,7 +295,7 @@
             {{-- ===================================================== --}}
             <div class="overflow-x-auto">
 
-                <table class="w-full min-w-[900px] text-left">
+                <table class="w-full min-w-[1050px] text-left">
 
                     {{-- TABLE HEAD --}}
                     <thead class="border-b border-slate-200 bg-slate-50">
@@ -327,6 +318,10 @@
                                 Jatuh Tempo
                             </th>
 
+                            <th class="px-6 py-4 text-center text-xs font-bold uppercase tracking-wider text-slate-500">
+                                Status
+                            </th>
+
                             <th class="px-6 py-4 text-right text-xs font-bold uppercase tracking-wider text-slate-500">
                                 Aksi
                             </th>
@@ -343,19 +338,14 @@
 
                             <tr class="group transition duration-200 hover:bg-primary-50/40">
 
-
                                 {{-- PEMINJAM --}}
                                 <td class="px-6 py-5">
 
                                     <div class="flex items-center gap-3">
 
-                                        {{-- Avatar --}}
                                         <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary-100 font-extrabold text-primary-700 ring-4 ring-primary-50">
-
                                             {{ strtoupper(substr($peminjaman->user->name, 0, 1)) }}
-
                                         </div>
-
 
                                         <div class="min-w-0">
 
@@ -399,7 +389,6 @@
 
                                         </div>
 
-
                                         <div class="min-w-0">
 
                                             <p class="max-w-[230px] truncate font-bold text-slate-800">
@@ -427,9 +416,7 @@
                                         </div>
 
                                         <span class="text-sm font-semibold text-slate-600">
-
                                             {{ \Carbon\Carbon::parse($peminjaman->tanggal_pinjam)->format('d M Y') }}
-
                                         </span>
 
                                     </div>
@@ -451,36 +438,134 @@
                                 </td>
 
 
+                                {{-- STATUS --}}
+                                <td class="px-6 py-5 text-center">
+
+                                    @if ($peminjaman->status === 'menunggu')
+
+                                        <span class="inline-flex items-center gap-1.5 rounded-full border border-orange-200 bg-orange-50 px-3 py-1.5 text-xs font-bold text-orange-700">
+                                            ⏳ Menunggu
+                                        </span>
+
+                                    @elseif ($peminjaman->status === 'dipinjam')
+
+                                        <span class="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-bold text-blue-700">
+                                            📚 Dipinjam
+                                        </span>
+
+                                    @elseif ($peminjaman->status === 'ditolak')
+
+                                        <span class="inline-flex items-center gap-1.5 rounded-full border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-bold text-red-700">
+                                            ❌ Ditolak
+                                        </span>
+
+                                    @elseif ($peminjaman->status === 'dikembalikan')
+
+                                        <span class="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-700">
+                                            ✅ Dikembalikan
+                                        </span>
+
+                                    @else
+
+                                        <span class="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-bold text-slate-600">
+                                            {{ ucfirst($peminjaman->status) }}
+                                        </span>
+
+                                    @endif
+
+                                </td>
+
+
                                 {{-- AKSI --}}
                                 <td class="px-6 py-5 text-right">
 
-                                    <form
-                                        action="{{ route('pengembalian.kembalikan', $peminjaman) }}"
-                                        method="POST"
-                                        onsubmit="return confirm('Yakin buku ini dikembalikan?')"
-                                    >
+                                    @if ($peminjaman->status === 'menunggu')
 
-                                        @csrf
+                                        <div class="flex justify-end gap-2">
 
-                                        <button
-                                            type="submit"
-                                            class="inline-flex items-center gap-2 rounded-xl bg-primary-600 px-4 py-2.5 text-sm font-bold text-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:bg-primary-700 hover:shadow-lg active:translate-y-0"
+                                            {{-- SETUJUI --}}
+                                            <form
+                                                action="{{ route('pengembalian.setujui', $peminjaman) }}"
+                                                method="POST"
+                                                onsubmit="return confirm('Yakin ingin menyetujui pengajuan peminjaman ini?')"
+                                            >
+
+                                                @csrf
+
+                                                <button
+                                                    type="submit"
+                                                    class="inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-3 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-emerald-700 hover:shadow-md"
+                                                >
+                                                    <span>✓</span>
+                                                    Setujui
+                                                </button>
+
+                                            </form>
+
+
+                                            {{-- TOLAK --}}
+                                            <form
+                                                action="{{ route('pengembalian.tolak', $peminjaman) }}"
+                                                method="POST"
+                                                onsubmit="return confirm('Yakin ingin menolak pengajuan peminjaman ini?')"
+                                            >
+
+                                                @csrf
+
+                                                <button
+                                                    type="submit"
+                                                    class="inline-flex items-center gap-1.5 rounded-xl bg-red-600 px-3 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-red-700 hover:shadow-md"
+                                                >
+                                                    <span>✕</span>
+                                                    Tolak
+                                                </button>
+
+                                            </form>
+
+                                        </div>
+
+                                    @elseif ($peminjaman->status === 'dipinjam')
+
+                                        <form
+                                            action="{{ route('pengembalian.kembalikan', $peminjaman) }}"
+                                            method="POST"
+                                            onsubmit="return confirm('Yakin buku ini sudah dikembalikan?')"
                                         >
 
-                                            <span class="text-base">
-                                                🔄
-                                            </span>
+                                            @csrf
 
-                                            Kembalikan
+                                            <button
+                                                type="submit"
+                                                class="inline-flex items-center gap-2 rounded-xl bg-primary-600 px-4 py-2.5 text-sm font-bold text-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:bg-primary-700 hover:shadow-lg active:translate-y-0"
+                                            >
 
-                                        </button>
+                                                <span class="text-base">
+                                                    🔄
+                                                </span>
 
-                                    </form>
+                                                Kembalikan
+
+                                            </button>
+
+                                        </form>
+
+                                    @elseif ($peminjaman->status === 'ditolak')
+
+                                        <span class="text-xs font-semibold text-slate-400">
+                                            Tidak ada aksi
+                                        </span>
+
+                                    @elseif ($peminjaman->status === 'dikembalikan')
+
+                                        <span class="text-xs font-semibold text-emerald-600">
+                                            Selesai
+                                        </span>
+
+                                    @endif
 
                                 </td>
 
                             </tr>
-
 
                         @empty
 
@@ -488,7 +573,7 @@
                             <tr>
 
                                 <td
-                                    colspan="5"
+                                    colspan="6"
                                     class="px-6 py-20 text-center"
                                 >
 
@@ -497,11 +582,11 @@
                                     </div>
 
                                     <h2 class="mt-6 text-xl font-extrabold text-slate-900">
-                                        Tidak ada peminjaman aktif
+                                        Tidak ada data peminjaman
                                     </h2>
 
                                     <p class="mt-2 text-sm text-slate-500">
-                                        Semua buku sudah dikembalikan.
+                                        Belum ada pengajuan atau peminjaman aktif.
                                     </p>
 
                                 </td>
@@ -540,11 +625,14 @@
 
             <p class="text-xs leading-5 text-slate-500">
 
-                Pastikan setiap pengembalian diproses dengan benar agar
-                <span class="font-bold text-primary-700">
-                    stok buku
+                Pengajuan dengan status
+                <span class="font-bold text-orange-600">
+                    Menunggu
                 </span>
-                dan data peminjaman tetap akurat.
+                harus disetujui terlebih dahulu sebelum buku dapat dipinjam.
+
+                Setelah disetujui, user dapat mengembalikan buku melalui
+                sistem perpustakaan.
 
             </p>
 
