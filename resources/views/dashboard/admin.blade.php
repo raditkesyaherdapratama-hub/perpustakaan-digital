@@ -49,8 +49,10 @@
                 {{-- Hero Icon --}}
                 <div class="hidden md:flex">
 
-                    <div class="flex h-28 w-28 items-center justify-center rounded-3xl border border-white/20 bg-white/10 text-6xl shadow-2xl backdrop-blur-md">
-                        📚
+                    <div class="relative flex h-28 w-28 items-center justify-center rounded-3xl border border-white/20 bg-white/10 text-emerald-300 shadow-2xl backdrop-blur-md transition-transform duration-500 hover:rotate-6 hover:scale-105">
+                        <svg class="h-14 w-14 drop-shadow-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                        </svg>
                     </div>
 
                 </div>
@@ -68,36 +70,38 @@
 
 
             {{-- TOTAL BUKU --}}
-            <div class="group relative overflow-hidden rounded-3xl border border-green-100 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-green-200 hover:shadow-xl">
+            <div class="group relative overflow-hidden rounded-3xl border border-slate-100 bg-gradient-to-br from-white via-slate-50/50 to-emerald-50/30 p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-emerald-200 hover:shadow-xl hover:shadow-emerald-500/10">
 
-                {{-- Decoration --}}
-                <div class="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-green-50 transition-transform duration-500 group-hover:scale-125"></div>
+                {{-- Glowing Blob Decoration --}}
+                <div class="absolute -right-8 -top-8 h-28 w-28 rounded-full bg-emerald-400/10 blur-2xl transition-all duration-500 group-hover:scale-150 group-hover:bg-emerald-400/20"></div>
 
                 <div class="relative z-10">
 
                     <div class="mb-6 flex items-center justify-between">
 
-                        <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-green-100 text-2xl shadow-sm">
-                            📚
+                        <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-400 text-white shadow-lg shadow-emerald-500/30 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3">
+                            <svg class="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                            </svg>
                         </div>
 
-                        <span class="rounded-full bg-green-50 px-3 py-1 text-xs font-bold text-green-700">
+                        <span class="rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-bold tracking-wide text-emerald-700 ring-1 ring-inset ring-emerald-600/20">
                             KOLEKSI
                         </span>
 
                     </div>
 
-                    <p class="text-sm font-medium text-slate-500">
+                    <p class="text-xs font-semibold tracking-wide uppercase text-slate-400">
                         Total Buku
                     </p>
 
-                    <h2 class="mt-2 text-4xl font-extrabold tracking-tight text-slate-900">
+                    <h2 class="mt-1 text-4xl font-black tracking-tight text-slate-900">
                         {{ $totalBuku ?? 0 }}
                     </h2>
 
-                    <div class="mt-4 flex items-center gap-2 text-xs font-semibold text-green-600">
+                    <div class="mt-4 flex items-center gap-2 text-xs font-medium text-emerald-700">
 
-                        <span class="flex h-6 w-6 items-center justify-center rounded-full bg-green-100">
+                        <span class="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
                             ✓
                         </span>
 
@@ -111,35 +115,37 @@
 
 
             {{-- TOTAL ANGGOTA --}}
-            <div class="group relative overflow-hidden rounded-3xl border border-emerald-100 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-emerald-200 hover:shadow-xl">
+            <div class="group relative overflow-hidden rounded-3xl border border-slate-100 bg-gradient-to-br from-white via-slate-50/50 to-blue-50/30 p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-xl hover:shadow-blue-500/10">
 
-                <div class="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-emerald-50 transition-transform duration-500 group-hover:scale-125"></div>
+                <div class="absolute -right-8 -top-8 h-28 w-28 rounded-full bg-blue-400/10 blur-2xl transition-all duration-500 group-hover:scale-150 group-hover:bg-blue-400/20"></div>
 
                 <div class="relative z-10">
 
                     <div class="mb-6 flex items-center justify-between">
 
-                        <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-100 text-2xl shadow-sm">
-                            👥
+                        <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-400 text-white shadow-lg shadow-blue-500/30 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-3">
+                            <svg class="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                            </svg>
                         </div>
 
-                        <span class="rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700">
+                        <span class="rounded-full bg-blue-50 px-3 py-1 text-[11px] font-bold tracking-wide text-blue-700 ring-1 ring-inset ring-blue-600/20">
                             ANGGOTA
                         </span>
 
                     </div>
 
-                    <p class="text-sm font-medium text-slate-500">
+                    <p class="text-xs font-semibold tracking-wide uppercase text-slate-400">
                         Total Anggota
                     </p>
 
-                    <h2 class="mt-2 text-4xl font-extrabold tracking-tight text-slate-900">
+                    <h2 class="mt-1 text-4xl font-black tracking-tight text-slate-900">
                         {{ $totalAnggota ?? 0 }}
                     </h2>
 
-                    <div class="mt-4 flex items-center gap-2 text-xs font-semibold text-emerald-600">
+                    <div class="mt-4 flex items-center gap-2 text-xs font-medium text-blue-700">
 
-                        <span class="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-100">
+                        <span class="flex h-5 w-5 items-center justify-center rounded-full bg-blue-100 text-blue-600">
                             ✓
                         </span>
 
@@ -153,35 +159,37 @@
 
 
             {{-- BUKU DIPINJAM --}}
-            <div class="group relative overflow-hidden rounded-3xl border border-teal-100 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-teal-200 hover:shadow-xl">
+            <div class="group relative overflow-hidden rounded-3xl border border-slate-100 bg-gradient-to-br from-white via-slate-50/50 to-amber-50/30 p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-amber-200 hover:shadow-xl hover:shadow-amber-500/10">
 
-                <div class="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-teal-50 transition-transform duration-500 group-hover:scale-125"></div>
+                <div class="absolute -right-8 -top-8 h-28 w-28 rounded-full bg-amber-400/10 blur-2xl transition-all duration-500 group-hover:scale-150 group-hover:bg-amber-400/20"></div>
 
                 <div class="relative z-10">
 
                     <div class="mb-6 flex items-center justify-between">
 
-                        <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-teal-100 text-2xl shadow-sm">
-                            📖
+                        <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-400 text-white shadow-lg shadow-amber-500/30 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3">
+                            <svg class="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
                         </div>
 
-                        <span class="rounded-full bg-teal-50 px-3 py-1 text-xs font-bold text-teal-700">
+                        <span class="rounded-full bg-amber-50 px-3 py-1 text-[11px] font-bold tracking-wide text-amber-700 ring-1 ring-inset ring-amber-600/20">
                             AKTIVITAS
                         </span>
 
                     </div>
 
-                    <p class="text-sm font-medium text-slate-500">
+                    <p class="text-xs font-semibold tracking-wide uppercase text-slate-400">
                         Buku Dipinjam
                     </p>
 
-                    <h2 class="mt-2 text-4xl font-extrabold tracking-tight text-slate-900">
+                    <h2 class="mt-1 text-4xl font-black tracking-tight text-slate-900">
                         {{ $bukuDipinjam ?? 0 }}
                     </h2>
 
-                    <div class="mt-4 flex items-center gap-2 text-xs font-semibold text-teal-600">
+                    <div class="mt-4 flex items-center gap-2 text-xs font-medium text-amber-700">
 
-                        <span class="flex h-6 w-6 items-center justify-center rounded-full bg-teal-100">
+                        <span class="flex h-5 w-5 items-center justify-center rounded-full bg-amber-100 text-amber-600">
                             ↗
                         </span>
 
@@ -195,35 +203,37 @@
 
 
             {{-- PENGEMBALIAN --}}
-            <div class="group relative overflow-hidden rounded-3xl border border-lime-100 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-lime-200 hover:shadow-xl">
+            <div class="group relative overflow-hidden rounded-3xl border border-slate-100 bg-gradient-to-br from-white via-slate-50/50 to-purple-50/30 p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-purple-200 hover:shadow-xl hover:shadow-purple-500/10">
 
-                <div class="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-lime-50 transition-transform duration-500 group-hover:scale-125"></div>
+                <div class="absolute -right-8 -top-8 h-28 w-28 rounded-full bg-purple-400/10 blur-2xl transition-all duration-500 group-hover:scale-150 group-hover:bg-purple-400/20"></div>
 
                 <div class="relative z-10">
 
                     <div class="mb-6 flex items-center justify-between">
 
-                        <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-lime-100 text-2xl shadow-sm">
-                            🔄
+                        <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-tr from-purple-600 to-violet-400 text-white shadow-lg shadow-purple-500/30 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-3">
+                            <svg class="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
                         </div>
 
-                        <span class="rounded-full bg-lime-50 px-3 py-1 text-xs font-bold text-lime-700">
+                        <span class="rounded-full bg-purple-50 px-3 py-1 text-[11px] font-bold tracking-wide text-purple-700 ring-1 ring-inset ring-purple-600/20">
                             SELESAI
                         </span>
 
                     </div>
 
-                    <p class="text-sm font-medium text-slate-500">
+                    <p class="text-xs font-semibold tracking-wide uppercase text-slate-400">
                         Pengembalian
                     </p>
 
-                    <h2 class="mt-2 text-4xl font-extrabold tracking-tight text-slate-900">
+                    <h2 class="mt-1 text-4xl font-black tracking-tight text-slate-900">
                         {{ $totalPengembalian ?? 0 }}
                     </h2>
 
-                    <div class="mt-4 flex items-center gap-2 text-xs font-semibold text-lime-600">
+                    <div class="mt-4 flex items-center gap-2 text-xs font-medium text-purple-700">
 
-                        <span class="flex h-6 w-6 items-center justify-center rounded-full bg-lime-100">
+                        <span class="flex h-5 w-5 items-center justify-center rounded-full bg-purple-100 text-purple-600">
                             ✓
                         </span>
 
