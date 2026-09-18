@@ -17,9 +17,10 @@ class PengembalianController extends Controller
     {
         $peminjamans = Peminjaman::with([
             'user',
-            'buku'
+            'buku',
+            'pengembalian' // Pastikan relasi pengembalian dipanggil agar denda terbaca
         ])
-            ->whereIn('status', ['menunggu', 'dipinjam'])
+            ->whereIn('status', ['menunggu', 'dipinjam', 'dikembalikan'])
             ->latest()
             ->paginate(10);
 
@@ -29,42 +30,25 @@ class PengembalianController extends Controller
         );
     }
 
-
     /**
      * Menyetujui pengajuan peminjaman
      */
     public function setujui(Peminjaman $peminjaman)
     {
         if ($peminjaman->status !== 'menunggu') {
-            return back()->with(
-                'error',
-                'Pengajuan ini sudah diproses sebelumnya.'
-            );
+            return back()->with('error', 'Pengajuan ini sudah diproses sebelumnya.');
         }
 
         if ($peminjaman->buku->stok <= 0) {
-            return back()->with(
-                'error',
-                'Stok buku sudah habis. Pengajuan belum dapat disetujui.'
-            );
+            return back()->with('error', 'Stok buku sudah habis. Pengajuan belum dapat disetujui.');
         }
 
         DB::transaction(function () use ($peminjaman) {
-
             $peminjaman->buku->decrement('stok');
-
             $peminjaman->update([
                 'status' => 'dipinjam',
             ]);
-
         });
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | NOTIFIKASI KE USER
-        |--------------------------------------------------------------------------
-        */
 
         $peminjaman->user->notify(new PeminjamanNotification(
             'Peminjaman Disetujui',
@@ -73,13 +57,8 @@ class PengembalianController extends Controller
             route('user.peminjaman')
         ));
 
-
-        return back()->with(
-            'success',
-            'Pengajuan peminjaman berhasil disetujui.'
-        );
+        return back()->with('success', 'Pengajuan peminjaman berhasil disetujui.');
     }
-
 
     /**
      * Menolak pengajuan peminjaman
@@ -87,22 +66,12 @@ class PengembalianController extends Controller
     public function tolak(Peminjaman $peminjaman)
     {
         if ($peminjaman->status !== 'menunggu') {
-            return back()->with(
-                'error',
-                'Pengajuan ini sudah diproses sebelumnya.'
-            );
+            return back()->with('error', 'Pengajuan ini sudah diproses sebelumnya.');
         }
 
         $peminjaman->update([
             'status' => 'ditolak',
         ]);
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | NOTIFIKASI KE USER
-        |--------------------------------------------------------------------------
-        */
 
         $peminjaman->user->notify(new PeminjamanNotification(
             'Peminjaman Ditolak',
@@ -111,13 +80,8 @@ class PengembalianController extends Controller
             route('user.peminjaman')
         ));
 
-
-        return back()->with(
-            'success',
-            'Pengajuan peminjaman berhasil ditolak.'
-        );
+        return back()->with('success', 'Pengajuan peminjaman berhasil ditolak.');
     }
-
 
     /**
      * Proses pengembalian buku
@@ -125,81 +89,37 @@ class PengembalianController extends Controller
     public function kembalikan(Peminjaman $peminjaman)
     {
         if ($peminjaman->status === 'dikembalikan') {
-            return back()->with(
-                'error',
-                'Buku ini sudah dikembalikan.'
-            );
+            return back()->with('error', 'Buku ini sudah dikembalikan.');
         }
 
         if ($peminjaman->status !== 'dipinjam') {
-            return back()->with(
-                'error',
-                'Buku ini belum disetujui atau belum berstatus dipinjam.'
-            );
+            return back()->with('error', 'Buku ini belum disetujui atau belum berstatus dipinjam.');
         }
 
-
         $tanggalKembali = now();
-
-        $tanggalJatuhTempo =
-            \Carbon\Carbon::parse(
-                $peminjaman->tanggal_jatuh_tempo
-            );
-
-
+        $tanggalJatuhTempo = \Carbon\Carbon::parse($peminjaman->tanggal_jatuh_tempo);
         $keterlambatan = 0;
 
         if ($tanggalKembali->greaterThan($tanggalJatuhTempo)) {
-
-            $keterlambatan =
-                $tanggalJatuhTempo
-                    ->diffInDays($tanggalKembali);
-
+            $keterlambatan = $tanggalJatuhTempo->diffInDays($tanggalKembali);
         }
 
+        $denda = $keterlambatan * 1000; // Rp1.000 per hari
 
-        /*
-        |--------------------------------------------------------------------------
-        | DENDA
-        |--------------------------------------------------------------------------
-        | Rp1.000 per hari keterlambatan
-        |--------------------------------------------------------------------------
-        */
-
-        $denda = $keterlambatan * 1000;
-
-
-        DB::transaction(function () use (
-            $peminjaman,
-            $tanggalKembali,
-            $keterlambatan,
-            $denda
-        ) {
-
+        DB::transaction(function () use ($peminjaman, $tanggalKembali, $keterlambatan, $denda) {
             Pengembalian::create([
                 'peminjaman_id' => $peminjaman->id,
-                'tanggal_kembali' => $tanggalKembali
-                    ->toDateString(),
+                'tanggal_kembali' => $tanggalKembali->toDateString(),
                 'keterlambatan' => $keterlambatan,
                 'denda' => $denda,
             ]);
-
 
             $peminjaman->update([
                 'status' => 'dikembalikan',
             ]);
 
-
             $peminjaman->buku->increment('stok');
-
         });
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | NOTIFIKASI KE USER
-        |--------------------------------------------------------------------------
-        */
 
         $peminjaman->user->notify(new PeminjamanNotification(
             'Buku Dikembalikan',
@@ -208,10 +128,18 @@ class PengembalianController extends Controller
             route('user.peminjaman')
         ));
 
+        return back()->with('success', 'Buku berhasil dikembalikan.');
+    }
 
-        return back()->with(
-            'success',
-            'Buku berhasil dikembalikan.'
-        );
+    /**
+     * Menyelesaikan / Melunasi Denda
+     */
+    public function lunasiDenda(Pengembalian $pengembalian)
+    {
+        $pengembalian->update([
+            'denda' => 0,
+        ]);
+
+        return back()->with('success', 'Denda berhasil diselesaikan dan dilunasi.');
     }
 }

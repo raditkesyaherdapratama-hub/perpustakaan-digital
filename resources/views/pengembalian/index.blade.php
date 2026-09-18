@@ -14,7 +14,6 @@
         {{-- HERO / HEADER FUTURISTIK --}}
         {{-- ========================================================= --}}
         <div class="relative mb-8 overflow-hidden rounded-3xl bg-gradient-to-br from-green-950 via-green-800 to-emerald-700 p-8 text-white shadow-xl">
-            {{-- Background Glowing Orbs --}}
             <div class="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-green-400/20 blur-3xl"></div>
             <div class="absolute -bottom-24 right-40 h-64 w-64 rounded-full bg-emerald-300/10 blur-3xl"></div>
 
@@ -33,7 +32,7 @@
                     </h1>
 
                     <p class="mt-2 max-w-2xl text-sm leading-6 text-green-100 md:text-base">
-                        Kelola pengajuan peminjaman, persetujuan, penolakan, dan pengembalian buku perpustakaan.
+                        Kelola pengajuan peminjaman, persetujuan, penolakan, denda, dan pengembalian buku perpustakaan.
                     </p>
                 </div>
 
@@ -168,7 +167,7 @@
                     </div>
                     <div>
                         <h2 class="text-lg font-extrabold text-slate-900">Daftar Pengajuan & Peminjaman</h2>
-                        <p class="mt-0.5 text-xs text-slate-500">Kelola status persetujuan, penolakan, dan pengembalian buku</p>
+                        <p class="mt-0.5 text-xs text-slate-500">Kelola status persetujuan, penolakan, denda, dan pengembalian buku</p>
                     </div>
                 </div>
 
@@ -188,7 +187,7 @@
                             <th class="px-6 py-4">Tanggal Pinjam</th>
                             <th class="px-6 py-4">Jatuh Tempo</th>
                             <th class="px-6 py-4 text-center">Status</th>
-                            <th class="px-6 py-4 text-right">Aksi</th>
+                            <th class="px-6 py-4 text-right">Aksi & Denda</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100 text-xs font-medium">
@@ -272,11 +271,10 @@
                                     @endif
                                 </td>
 
-                                {{-- AKSI --}}
+                                {{-- AKSI & DENDA --}}
                                 <td class="px-6 py-4 text-right">
                                     @if ($peminjaman->status === 'menunggu')
                                         <div class="flex justify-end gap-2">
-                                            {{-- SETUJUI --}}
                                             <form action="{{ route('pengembalian.setujui', $peminjaman) }}" method="POST" onsubmit="return confirm('Yakin ingin menyetujui pengajuan peminjaman ini?')">
                                                 @csrf
                                                 <button type="submit" class="inline-flex items-center gap-1 rounded-xl bg-emerald-600 px-3 py-2 text-xs font-bold text-white shadow-md shadow-emerald-600/20 transition hover:bg-emerald-700 hover:scale-105">
@@ -284,7 +282,6 @@
                                                 </button>
                                             </form>
 
-                                            {{-- TOLAK --}}
                                             <form action="{{ route('pengembalian.tolak', $peminjaman) }}" method="POST" onsubmit="return confirm('Yakin ingin menolak pengajuan peminjaman ini?')">
                                                 @csrf
                                                 <button type="submit" class="inline-flex items-center gap-1 rounded-xl bg-red-600 px-3 py-2 text-xs font-bold text-white shadow-md shadow-red-600/20 transition hover:bg-red-700 hover:scale-105">
@@ -302,10 +299,26 @@
                                                 Kembalikan
                                             </button>
                                         </form>
+                                    @elseif ($peminjaman->status === 'dikembalikan')
+                                        {{-- Cek jika ada relasi pengembalian dan dendanya masih ada (> 0) --}}
+                                        @if($peminjaman->pengembalian && $peminjaman->pengembalian->denda > 0)
+                                            <div class="flex flex-col items-end gap-1">
+                                                <span class="text-xs font-bold text-red-600">
+                                                    Denda: Rp {{ number_format($peminjaman->pengembalian->denda, 0, ',', '.') }}
+                                                </span>
+                                                <form action="{{ route('pengembalian.lunasi', $peminjaman->pengembalian->id) }}" method="POST" onsubmit="return confirm('Apakah siswa sudah membayar denda ini?')">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    <button type="submit" class="inline-flex items-center gap-1 rounded-xl bg-amber-600 px-3 py-1.5 text-[11px] font-bold text-white shadow-md transition hover:bg-amber-700">
+                                                        Selesaikan Denda
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        @else
+                                            <span class="text-xs font-bold text-emerald-600">Lunas / Selesai</span>
+                                        @endif
                                     @elseif ($peminjaman->status === 'ditolak')
                                         <span class="text-xs font-semibold text-slate-400">Tidak ada aksi</span>
-                                    @elseif ($peminjaman->status === 'dikembalikan')
-                                        <span class="text-xs font-bold text-emerald-600">Selesai</span>
                                     @endif
                                 </td>
 
@@ -339,7 +352,7 @@
                 💡
             </div>
             <p class="text-xs leading-5 text-slate-500">
-                Pengajuan dengan status <span class="font-bold text-amber-600">Menunggu</span> harus disetujui terlebih dahulu sebelum buku dapat dipinjam. Setelah disetujui, admin dapat mengonfirmasi pengembalian buku.
+                Pengajuan dengan status <span class="font-bold text-amber-600">Menunggu</span> harus disetujui terlebih dahulu sebelum buku dapat dipinjam. Jika ada denda keterlambatan saat buku <span class="font-bold text-emerald-600">Dikembalikan</span>, admin dapat mengklik tombol <span class="font-bold text-amber-600">Selesaikan Denda</span> setelah siswa membayar.
             </p>
         </div>
 

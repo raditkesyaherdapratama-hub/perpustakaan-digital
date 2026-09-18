@@ -57,11 +57,14 @@ class DashboardController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | TOTAL DENDA
+        | TOTAL DENDA (DIUBAH DI SINI)
+        |--------------------------------------------------------------------------
+        | Hanya menjumlahkan denda yang nilainya > 0 (belum dilunasi/diselesaikan).
+        | Jika denda sudah diset jadi 0 oleh admin, maka tidak akan ikut terhitung.
         |--------------------------------------------------------------------------
         */
 
-        $totalDenda = Pengembalian::sum('denda');
+        $totalDenda = Pengembalian::where('denda', '>', 0)->sum('denda');
 
 
         /*

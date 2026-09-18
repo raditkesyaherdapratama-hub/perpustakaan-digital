@@ -194,6 +194,15 @@ Route::middleware('auth')->group(function () {
             'kembalikan'
         ])->name('pengembalian.kembalikan');
 
+        /*
+        | Melunasi / Menyelesaikan Denda Pengembalian
+        */
+
+        Route::patch('/pengembalian/denda/{pengembalian}/lunasi', [
+            PengembalianController::class,
+            'lunasiDenda'
+        ])->name('pengembalian.lunasi');
+
 
         /*
         |--------------------------------------------------------------------------
