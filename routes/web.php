@@ -10,6 +10,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\PengembalianController;
+use App\Http\Controllers\PengajuanPeminjamanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\LaporanController;
 
@@ -109,18 +110,6 @@ Route::middleware('auth')->group(function () {
 
     /*
     |--------------------------------------------------------------------------
-    | PEMINJAMAN USER
-    |--------------------------------------------------------------------------
-    */
-
-    Route::post('/buku/{buku}/pinjam', [
-        PeminjamanController::class,
-        'pinjam'
-    ])->name('peminjaman.pinjam');
-
-
-    /*
-    |--------------------------------------------------------------------------
     | KOLEKSI BUKU
     |--------------------------------------------------------------------------
     */
@@ -133,11 +122,85 @@ Route::middleware('auth')->group(function () {
 
     /*
     |--------------------------------------------------------------------------
+    | PEMINJAMAN USER
+    |--------------------------------------------------------------------------
+    */
+
+    Route::post('/buku/{buku}/pinjam', [
+        PeminjamanController::class,
+        'pinjam'
+    ])->name('peminjaman.pinjam');
+
+
+    /*
+    |--------------------------------------------------------------------------
     | ADMIN
     |--------------------------------------------------------------------------
     */
 
     Route::middleware('role:admin')->group(function () {
+
+        /*
+        |--------------------------------------------------------------------------
+        | ADMIN DASHBOARD
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get('/admin/dashboard', [
+            DashboardController::class,
+            'admin'
+        ])->name('admin.dashboard');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | PENGAJUAN PEMINJAMAN
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get('/pengajuan-peminjaman', [
+            PengajuanPeminjamanController::class,
+            'index'
+        ])->name('pengajuan.index');
+
+        Route::post('/pengajuan-peminjaman/{peminjaman}/setujui', [
+            PengajuanPeminjamanController::class,
+            'setujui'
+        ])->name('pengajuan.setujui');
+
+        Route::post('/pengajuan-peminjaman/{peminjaman}/tolak', [
+            PengajuanPeminjamanController::class,
+            'tolak'
+        ])->name('pengajuan.tolak');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | PEMINJAMAN / PENGEMBALIAN
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get('/peminjaman', [
+            PeminjamanController::class,
+            'index'
+        ])->name('peminjaman.index');
+
+
+        Route::get('/pengembalian', [
+            PengembalianController::class,
+            'index'
+        ])->name('pengembalian.index');
+
+        Route::post('/pengembalian/{peminjaman}', [
+            PengembalianController::class,
+            'kembalikan'
+        ])->name('pengembalian.kembalikan');
+
+        Route::patch('/pengembalian/denda/{pengembalian}/lunasi', [
+            PengembalianController::class,
+            'lunasiDenda'
+        ])->name('pengembalian.lunasi');
+
 
         /*
         |--------------------------------------------------------------------------
@@ -154,66 +217,6 @@ Route::middleware('auth')->group(function () {
             LaporanController::class,
             'print'
         ])->name('laporan.print');
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | PENGEMBALIAN DAN PERSETUJUAN PEMINJAMAN
-        |--------------------------------------------------------------------------
-        */
-
-        Route::get('/pengembalian', [
-            PengembalianController::class,
-            'index'
-        ])->name('pengembalian.index');
-
-        /*
-        | Pengajuan peminjaman disetujui admin
-        */
-
-        Route::post('/pengembalian/{peminjaman}/setujui', [
-            PengembalianController::class,
-            'setujui'
-        ])->name('pengembalian.setujui');
-
-        /*
-        | Pengajuan peminjaman ditolak admin
-        */
-
-        Route::post('/pengembalian/{peminjaman}/tolak', [
-            PengembalianController::class,
-            'tolak'
-        ])->name('pengembalian.tolak');
-
-        /*
-        | Proses pengembalian buku
-        */
-
-        Route::post('/pengembalian/{peminjaman}', [
-            PengembalianController::class,
-            'kembalikan'
-        ])->name('pengembalian.kembalikan');
-
-        /*
-        | Melunasi / Menyelesaikan Denda Pengembalian
-        */
-
-        Route::patch('/pengembalian/denda/{pengembalian}/lunasi', [
-            PengembalianController::class,
-            'lunasiDenda'
-        ])->name('pengembalian.lunasi');
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | ADMIN DASHBOARD
-        |--------------------------------------------------------------------------
-        */
-
-        Route::get('/admin/dashboard', [
-            DashboardController::class,
-            'admin'
-        ])->name('admin.dashboard');
 
 
         /*
@@ -343,7 +346,7 @@ Route::middleware('auth')->group(function () {
 
     /*
     |--------------------------------------------------------------------------
-    | USER
+    | USER DASHBOARD
     |--------------------------------------------------------------------------
     */
 

@@ -184,7 +184,7 @@ class PeminjamanController extends Controller
                 'Pengajuan Peminjaman Baru',
                 $user->name . ' mengajukan peminjaman buku "' . $buku->judul_buku . '". Silakan periksa pengajuan tersebut.',
                 'warning',
-                route('pengembalian.index')
+                route('pengajuan.index')
             ));
 
         }
@@ -199,6 +199,27 @@ class PeminjamanController extends Controller
         return back()->with(
             'success',
             'Pengajuan peminjaman berhasil dikirim. Silakan tunggu persetujuan admin.'
+        );
+    }
+
+
+    /**
+     * Daftar Peminjaman Aktif Untuk Admin
+     */
+    public function index()
+    {
+        $peminjamans = Peminjaman::with([
+            'user',
+            'buku',
+            'pengembalian'
+        ])
+            ->where('status', 'dipinjam')
+            ->latest()
+            ->paginate(10);
+
+        return view(
+            'peminjaman.index',
+            compact('peminjamans')
         );
     }
 
