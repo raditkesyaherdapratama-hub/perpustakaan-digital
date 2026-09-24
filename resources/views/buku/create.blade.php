@@ -2,7 +2,7 @@
 
 @section('content')
 
-<div class="min-h-screen bg-primary-50 px-6 py-8">
+<div class="min-h-screen bg-emerald-50/50 px-6 py-8">
 
     <div class="mx-auto max-w-6xl">
 
@@ -11,11 +11,11 @@
 
             <div>
 
-                <p class="text-sm font-semibold uppercase tracking-wider text-primary-600">
+                <p class="text-sm font-semibold uppercase tracking-wider text-emerald-600">
                     Manajemen Buku
                 </p>
 
-                <h1 class="mt-2 text-3xl font-bold tracking-tight text-primary-900">
+                <h1 class="mt-2 text-3xl font-bold tracking-tight text-emerald-950">
                     Tambah Buku
                     <span class="ml-1">📚</span>
                 </h1>
@@ -26,23 +26,21 @@
 
             </div>
 
-
             {{-- TOMBOL KEMBALI --}}
             <a
                 href="{{ route('buku.index') }}"
-                class="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-primary-200 hover:bg-primary-50 hover:text-primary-700"
+                class="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-emerald-200 hover:bg-emerald-50 hover:text-emerald-700"
             >
                 ← Kembali ke Koleksi
             </a>
 
         </div>
 
-
         {{-- FORM CARD --}}
         <div class="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
 
             {{-- FORM HEADER --}}
-            <div class="border-b border-slate-100 bg-gradient-to-r from-primary-900 to-primary-700 px-6 py-6 text-white md:px-8">
+            <div class="border-b border-slate-100 bg-gradient-to-r from-emerald-900 to-emerald-700 px-6 py-6 text-white md:px-8">
 
                 <div class="flex items-center gap-4">
 
@@ -56,7 +54,7 @@
                             Informasi Buku
                         </h2>
 
-                        <p class="mt-1 text-sm text-primary-100">
+                        <p class="mt-1 text-sm text-emerald-100">
                             Lengkapi data buku dengan benar sebelum menyimpan.
                         </p>
 
@@ -65,7 +63,6 @@
                 </div>
 
             </div>
-
 
             {{-- FORM --}}
             <form
@@ -76,7 +73,6 @@
             >
 
                 @csrf
-
 
                 {{-- ERROR VALIDASI --}}
                 @if ($errors->any())
@@ -115,13 +111,12 @@
 
                 @endif
 
-
                 {{-- DATA UTAMA --}}
                 <div class="mb-8">
 
                     <div class="mb-5">
 
-                        <p class="text-xs font-bold uppercase tracking-widest text-primary-600">
+                        <p class="text-xs font-bold uppercase tracking-widest text-emerald-600">
                             DATA UTAMA
                         </p>
 
@@ -131,9 +126,7 @@
 
                     </div>
 
-
                     <div class="grid gap-6 md:grid-cols-2">
-
 
                         {{-- KODE BUKU --}}
                         <div>
@@ -153,7 +146,7 @@
                                 value="{{ old('kode_buku') }}"
                                 placeholder="Contoh: BK001"
                                 required
-                                class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-primary-500 focus:bg-white focus:ring-4 focus:ring-primary-500/10"
+                                class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
                             >
 
                             @error('kode_buku')
@@ -163,7 +156,6 @@
                             @enderror
 
                         </div>
-
 
                         {{-- KATEGORI --}}
                         <div>
@@ -180,7 +172,7 @@
                                 id="kategori_id"
                                 name="kategori_id"
                                 required
-                                class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-primary-500 focus:bg-white focus:ring-4 focus:ring-primary-500/10"
+                                class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
                             >
 
                                 <option value="">
@@ -208,7 +200,6 @@
 
                         </div>
 
-
                         {{-- JUDUL --}}
                         <div class="md:col-span-2">
 
@@ -227,7 +218,7 @@
                                 value="{{ old('judul_buku') }}"
                                 placeholder="Masukkan judul buku"
                                 required
-                                class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-primary-500 focus:bg-white focus:ring-4 focus:ring-primary-500/10"
+                                class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
                             >
 
                             @error('judul_buku')
@@ -237,7 +228,6 @@
                             @enderror
 
                         </div>
-
 
                         {{-- PENGARANG --}}
                         <div>
@@ -257,7 +247,7 @@
                                 value="{{ old('pengarang') }}"
                                 placeholder="Nama pengarang"
                                 required
-                                class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-primary-500 focus:bg-white focus:ring-4 focus:ring-primary-500/10"
+                                class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
                             >
 
                             @error('pengarang')
@@ -267,7 +257,6 @@
                             @enderror
 
                         </div>
-
 
                         {{-- PENERBIT --}}
                         <div>
@@ -287,7 +276,7 @@
                                 value="{{ old('penerbit') }}"
                                 placeholder="Nama penerbit"
                                 required
-                                class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-primary-500 focus:bg-white focus:ring-4 focus:ring-primary-500/10"
+                                class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
                             >
 
                             @error('penerbit')
@@ -297,7 +286,6 @@
                             @enderror
 
                         </div>
-
 
                         {{-- TAHUN --}}
                         <div>
@@ -319,7 +307,7 @@
                                 min="1900"
                                 max="{{ date('Y') + 1 }}"
                                 required
-                                class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-primary-500 focus:bg-white focus:ring-4 focus:ring-primary-500/10"
+                                class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
                             >
 
                             @error('tahun_terbit')
@@ -329,7 +317,6 @@
                             @enderror
 
                         </div>
-
 
                         {{-- STOK --}}
                         <div>
@@ -350,7 +337,7 @@
                                 placeholder="Jumlah buku"
                                 min="0"
                                 required
-                                class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-primary-500 focus:bg-white focus:ring-4 focus:ring-primary-500/10"
+                                class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
                             >
 
                             @error('stok')
@@ -365,13 +352,12 @@
 
                 </div>
 
-
                 {{-- SAMPUL --}}
                 <div class="mb-8 border-t border-slate-100 pt-8">
 
                     <div class="mb-5">
 
-                        <p class="text-xs font-bold uppercase tracking-widest text-primary-600">
+                        <p class="text-xs font-bold uppercase tracking-widest text-emerald-600">
                             COVER BUKU
                         </p>
 
@@ -385,13 +371,12 @@
 
                     </div>
 
-
                     <label
                         for="sampul"
-                        class="group flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50 px-6 py-10 text-center transition hover:border-primary-400 hover:bg-primary-50"
+                        class="group flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50 px-6 py-10 text-center transition hover:border-emerald-400 hover:bg-emerald-50"
                     >
 
-                        <div class="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary-100 text-3xl transition group-hover:scale-105">
+                        <div class="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-100 text-3xl transition group-hover:scale-105">
                             🖼️
                         </div>
 
@@ -421,13 +406,12 @@
 
                 </div>
 
-
                 {{-- DESKRIPSI --}}
                 <div class="mb-8 border-t border-slate-100 pt-8">
 
                     <div class="mb-5">
 
-                        <p class="text-xs font-bold uppercase tracking-widest text-primary-600">
+                        <p class="text-xs font-bold uppercase tracking-widest text-emerald-600">
                             INFORMASI TAMBAHAN
                         </p>
 
@@ -437,13 +421,12 @@
 
                     </div>
 
-
                     <textarea
                         id="deskripsi"
                         name="deskripsi"
                         rows="5"
                         placeholder="Tuliskan deskripsi singkat mengenai buku..."
-                        class="w-full resize-none rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-primary-500 focus:bg-white focus:ring-4 focus:ring-primary-500/10"
+                        class="w-full resize-none rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
                     >{{ old('deskripsi') }}</textarea>
 
                     @error('deskripsi')
@@ -453,7 +436,6 @@
                     @enderror
 
                 </div>
-
 
                 {{-- ACTION --}}
                 <div class="flex flex-col-reverse gap-3 border-t border-slate-100 pt-6 sm:flex-row sm:justify-end">
@@ -467,7 +449,7 @@
 
                     <button
                         type="submit"
-                        class="inline-flex items-center justify-center gap-2 rounded-xl bg-primary-600 px-7 py-3 text-sm font-bold text-white shadow-lg shadow-primary-600/20 transition hover:bg-primary-700 hover:-translate-y-0.5 hover:shadow-xl"
+                        class="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-7 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-600/20 transition hover:bg-emerald-700 hover:-translate-y-0.5 hover:shadow-xl"
                     >
                         <span>＋</span>
                         Simpan Buku
@@ -478,7 +460,6 @@
             </form>
 
         </div>
-
 
         {{-- FOOTER INFO --}}
         <div class="mt-5 flex items-center gap-2 px-2 text-xs text-slate-400">
