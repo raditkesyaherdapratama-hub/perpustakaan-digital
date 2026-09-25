@@ -10,13 +10,18 @@
 {{-- CDN CHART.JS --}}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<div class="min-h-screen bg-slate-50 px-4 py-6 font-['Inter',sans-serif] sm:px-6 lg:px-8">
-    <div class="mx-auto max-w-7xl">
+{{-- ========================================================= --}}
+{{-- DASHBOARD CONTAINER --}}
+{{-- ========================================================= --}}
+<div class="min-h-screen bg-slate-50 px-4 py-6 font-['Inter',sans-serif] sm:px-6 lg:px-8 xl:px-10">
+
+    {{-- DESKTOP DIPERLEBAR --}}
+    <div class="mx-auto w-full max-w-[1700px]">
 
         {{-- ========================================================= --}}
         {{-- HERO --}}
         {{-- ========================================================= --}}
-        <div class="relative mb-8 overflow-hidden rounded-3xl bg-gradient-to-br from-green-950 via-green-800 to-emerald-700 p-8 text-white shadow-xl">
+        <div class="relative mb-8 overflow-hidden rounded-3xl bg-gradient-to-br from-green-950 via-green-800 to-emerald-700 p-6 text-white shadow-xl sm:p-8">
 
             {{-- Background Decoration --}}
             <div class="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-green-400/20 blur-3xl"></div>
@@ -68,14 +73,12 @@
                             viewBox="0 0 24 24"
                             xmlns="http://www.w3.org/2000/svg"
                         >
-
                             <path
                                 stroke-linecap="round"
                                 stroke-linejoin="round"
                                 stroke-width="1.8"
                                 d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
                             ></path>
-
                         </svg>
 
                     </div>
@@ -109,14 +112,12 @@
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
                             >
-
                                 <path
                                     stroke-linecap="round"
                                     stroke-linejoin="round"
                                     stroke-width="2"
                                     d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
                                 ></path>
-
                             </svg>
 
                         </div>
@@ -167,14 +168,12 @@
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
                             >
-
                                 <path
                                     stroke-linecap="round"
                                     stroke-linejoin="round"
                                     stroke-width="2"
                                     d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
                                 ></path>
-
                             </svg>
 
                         </div>
@@ -225,14 +224,12 @@
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
                             >
-
                                 <path
                                     stroke-linecap="round"
                                     stroke-linejoin="round"
                                     stroke-width="2"
                                     d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                                 ></path>
-
                             </svg>
 
                         </div>
@@ -283,14 +280,12 @@
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
                             >
-
                                 <path
                                     stroke-linecap="round"
                                     stroke-linejoin="round"
                                     stroke-width="2"
                                     d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
                                 ></path>
-
                             </svg>
 
                         </div>
@@ -343,14 +338,12 @@
                             stroke="currentColor"
                             viewBox="0 0 24 24"
                         >
-
                             <path
                                 stroke-linecap="round"
                                 stroke-linejoin="round"
                                 stroke-width="2"
                                 d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
                             ></path>
-
                         </svg>
 
                     </div>
@@ -381,7 +374,6 @@
 
             </div>
 
-
             {{-- CANVAS CHART --}}
             <div class="relative h-80 w-full">
                 <canvas id="peminjamanChart"></canvas>
@@ -391,211 +383,9 @@
 
 
         {{-- ========================================================= --}}
-        {{-- PEMINJAMAN TERBARU --}}
-        {{-- ========================================================= --}}
-        <div class="mb-8 overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-sm">
-
-            {{-- Header --}}
-            <div class="flex flex-col justify-between gap-3 border-b border-slate-100 p-6 sm:flex-row sm:items-center">
-
-                <div>
-
-                    <p class="text-xs font-bold uppercase tracking-widest text-emerald-600">
-                        AKTIVITAS
-                    </p>
-
-                    <h2 class="mt-2 text-xl font-extrabold text-slate-900">
-                        Peminjaman Terbaru 📋
-                    </h2>
-
-                    <p class="mt-1 text-sm text-slate-500">
-                        Aktivitas peminjaman terakhir
-                    </p>
-
-                </div>
-
-                <div class="rounded-full bg-emerald-50 px-4 py-2 text-xs font-semibold text-emerald-700">
-                    {{ ($peminjamanTerbaru ?? collect())->count() }} Aktivitas
-                </div>
-
-            </div>
-
-
-            @if (($peminjamanTerbaru ?? collect())->count() > 0)
-
-                {{-- Table --}}
-                <div class="overflow-x-auto">
-
-                    <table class="w-full text-left">
-
-                        <thead class="bg-slate-50/80">
-
-                            <tr>
-
-                                <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">
-                                    Anggota
-                                </th>
-
-                                <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">
-                                    Buku
-                                </th>
-
-                                <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">
-                                    Tanggal
-                                </th>
-
-                                <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">
-                                    Status
-                                </th>
-
-                            </tr>
-
-                        </thead>
-
-
-                        <tbody class="divide-y divide-slate-100 text-xs font-medium">
-
-                            @foreach ($peminjamanTerbaru as $peminjaman)
-
-                                <tr class="transition hover:bg-emerald-50/30">
-
-                                    {{-- Anggota --}}
-                                    <td class="px-6 py-4">
-
-                                        <div class="flex items-center gap-3">
-
-                                            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-400 font-bold text-white shadow-sm">
-                                                {{ strtoupper(substr($peminjaman->user->name ?? 'U', 0, 1)) }}
-                                            </div>
-
-                                            <div>
-
-                                                <p class="text-sm font-semibold text-slate-800">
-                                                    {{ $peminjaman->user->name ?? '-' }}
-                                                </p>
-
-                                                <p class="text-[11px] text-slate-400">
-                                                    Anggota
-                                                </p>
-
-                                            </div>
-
-                                        </div>
-
-                                    </td>
-
-
-                                    {{-- Buku --}}
-                                    <td class="px-6 py-4">
-
-                                        <p class="max-w-xs truncate text-sm font-semibold text-slate-800">
-                                            {{ $peminjaman->buku->judul_buku ?? '-' }}
-                                        </p>
-
-                                    </td>
-
-
-                                    {{-- Tanggal --}}
-                                    <td class="px-6 py-4">
-
-                                        <p class="text-sm text-slate-600">
-
-                                            {{ $peminjaman->tanggal_pinjam
-                                                ? \Carbon\Carbon::parse($peminjaman->tanggal_pinjam)->format('d M Y')
-                                                : '-'
-                                            }}
-
-                                        </p>
-
-                                    </td>
-
-
-                                    {{-- Status --}}
-                                    <td class="px-6 py-4">
-
-                                        @if ($peminjaman->status === 'dipinjam')
-
-                                            <span class="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-blue-700 ring-1 ring-inset ring-blue-600/20">
-
-                                                <span class="h-1.5 w-1.5 rounded-full bg-blue-500"></span>
-
-                                                Dipinjam
-
-                                            </span>
-
-                                        @elseif ($peminjaman->status === 'dikembalikan')
-
-                                            <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700 ring-1 ring-inset ring-emerald-600/20">
-
-                                                <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
-
-                                                Dikembalikan
-
-                                            </span>
-
-                                        @elseif ($peminjaman->status === 'menunggu')
-
-                                            <span class="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-700 ring-1 ring-inset ring-amber-600/20">
-
-                                                <span class="h-1.5 w-1.5 animate-pulse rounded-full bg-amber-500"></span>
-
-                                                Menunggu
-
-                                            </span>
-
-                                        @else
-
-                                            <span class="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600">
-
-                                                {{ ucfirst($peminjaman->status ?? '-') }}
-
-                                            </span>
-
-                                        @endif
-
-                                    </td>
-
-                                </tr>
-
-                            @endforeach
-
-                        </tbody>
-
-                    </table>
-
-                </div>
-
-            @else
-
-                <div class="flex min-h-48 items-center justify-center p-6 text-center">
-
-                    <div>
-
-                        <div class="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 text-2xl">
-                            📋
-                        </div>
-
-                        <p class="text-sm font-semibold text-slate-500">
-                            Belum ada aktivitas peminjaman.
-                        </p>
-
-                        <p class="mt-1 text-xs text-slate-400">
-                            Data peminjaman akan muncul di sini.
-                        </p>
-
-                    </div>
-
-                </div>
-
-            @endif
-
-        </div>
-
-
-        {{-- ========================================================= --}}
         {{-- SYSTEM OVERVIEW --}}
         {{-- ========================================================= --}}
-        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-green-950 via-green-900 to-emerald-900 p-8 text-white shadow-xl">
+        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-green-950 via-green-900 to-emerald-900 p-6 text-white shadow-xl sm:p-8">
 
             <div class="absolute -right-24 -top-24 h-80 w-80 rounded-full bg-green-400/10 blur-3xl"></div>
 
@@ -696,6 +486,7 @@
                     <p class="text-sm leading-6 text-green-100">
 
                         💡
+
                         <span class="font-bold text-white">
                             Tips:
                         </span>
@@ -711,6 +502,7 @@
         </div>
 
     </div>
+
 </div>
 
 
@@ -719,154 +511,154 @@
 {{-- ========================================================= --}}
 <script>
 
-    document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", function () {
 
-        const canvas = document.getElementById('peminjamanChart');
+    const canvas = document.getElementById('peminjamanChart');
 
-        if (!canvas) {
-            return;
-        }
+    if (!canvas) {
+        return;
+    }
 
-        const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d');
 
-        // Gradient Emerald untuk Kurva
-        const gradient = ctx.createLinearGradient(0, 0, 0, 320);
+    // Gradient Emerald untuk Kurva
+    const gradient = ctx.createLinearGradient(0, 0, 0, 320);
 
-        gradient.addColorStop(0, 'rgba(16, 185, 129, 0.45)');
-        gradient.addColorStop(1, 'rgba(16, 185, 129, 0.0)');
+    gradient.addColorStop(0, 'rgba(16, 185, 129, 0.45)');
+    gradient.addColorStop(1, 'rgba(16, 185, 129, 0.0)');
 
 
-        new Chart(ctx, {
+    new Chart(ctx, {
 
-            type: 'line',
+        type: 'line',
 
-            data: {
+        data: {
 
-                labels: {!! json_encode($bulan ?? ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun']) !!},
+            labels: {!! json_encode($bulan ?? ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun']) !!},
 
-                datasets: [{
+            datasets: [{
 
-                    label: 'Jumlah Peminjaman',
+                label: 'Jumlah Peminjaman',
 
-                    data: {!! json_encode($jumlahPeminjaman ?? [0, 0, 0, 0, 0, 0]) !!},
+                data: {!! json_encode($jumlahPeminjaman ?? [0, 0, 0, 0, 0, 0]) !!},
 
-                    borderColor: '#10b981',
+                borderColor: '#10b981',
 
-                    borderWidth: 3.5,
+                borderWidth: 3.5,
 
-                    fill: true,
+                fill: true,
 
-                    backgroundColor: gradient,
+                backgroundColor: gradient,
 
-                    tension: 0.4,
+                tension: 0.4,
 
-                    pointBackgroundColor: '#047857',
+                pointBackgroundColor: '#047857',
 
-                    pointBorderColor: '#ffffff',
+                pointBorderColor: '#ffffff',
 
-                    pointBorderWidth: 2,
+                pointBorderWidth: 2,
 
-                    pointRadius: 6,
+                pointRadius: 6,
 
-                    pointHoverRadius: 8
+                pointHoverRadius: 8
 
-                }]
+            }]
+
+        },
+
+
+        options: {
+
+            responsive: true,
+
+            maintainAspectRatio: false,
+
+            plugins: {
+
+                legend: {
+                    display: false
+                },
+
+                tooltip: {
+
+                    backgroundColor: '#0f172a',
+
+                    titleFont: {
+                        family: 'Inter',
+                        size: 13,
+                        weight: 'bold'
+                    },
+
+                    bodyFont: {
+                        family: 'Inter',
+                        size: 12
+                    },
+
+                    padding: 12,
+
+                    cornerRadius: 12,
+
+                    displayColors: false
+
+                }
 
             },
 
 
-            options: {
+            scales: {
 
-                responsive: true,
+                x: {
 
-                maintainAspectRatio: false,
-
-                plugins: {
-
-                    legend: {
+                    grid: {
                         display: false
                     },
 
-                    tooltip: {
+                    ticks: {
 
-                        backgroundColor: '#0f172a',
-
-                        titleFont: {
+                        font: {
                             family: 'Inter',
-                            size: 13,
-                            weight: 'bold'
+                            size: 11,
+                            weight: '600'
                         },
 
-                        bodyFont: {
-                            family: 'Inter',
-                            size: 12
-                        },
-
-                        padding: 12,
-
-                        cornerRadius: 12,
-
-                        displayColors: false
+                        color: '#94a3b8'
 
                     }
 
                 },
 
 
-                scales: {
+                y: {
 
-                    x: {
+                    grid: {
+                        color: '#f1f5f9'
+                    },
 
-                        grid: {
-                            display: false
+                    ticks: {
+
+                        font: {
+                            family: 'Inter',
+                            size: 11,
+                            weight: '600'
                         },
 
-                        ticks: {
+                        color: '#94a3b8',
 
-                            font: {
-                                family: 'Inter',
-                                size: 11,
-                                weight: '600'
-                            },
-
-                            color: '#94a3b8'
-
-                        }
+                        precision: 0
 
                     },
 
-
-                    y: {
-
-                        grid: {
-                            color: '#f1f5f9'
-                        },
-
-                        ticks: {
-
-                            font: {
-                                family: 'Inter',
-                                size: 11,
-                                weight: '600'
-                            },
-
-                            color: '#94a3b8',
-
-                            precision: 0
-
-                        },
-
-                        beginAtZero: true
-
-                    }
+                    beginAtZero: true
 
                 }
 
             }
 
-        });
+        }
 
     });
+
+});
 
 </script>
 
