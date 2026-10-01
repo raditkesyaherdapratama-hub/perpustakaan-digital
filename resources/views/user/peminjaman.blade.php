@@ -22,7 +22,7 @@
                     </h1>
 
                     <p class="mt-2 text-slate-500">
-                        Pantau semua aktivitas peminjaman buku kamu 📚
+                        Pantau semua aktivitas peminjaman buku kamu
                     </p>
 
                 </div>
@@ -32,7 +32,7 @@
                     href="{{ route('buku.index') }}"
                     class="inline-flex items-center justify-center gap-2 rounded-xl bg-primary-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-primary-600/20 transition hover:-translate-y-0.5 hover:bg-primary-700 hover:shadow-xl"
                 >
-                    📚
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
                     Jelajahi Buku
                 </a>
 
@@ -54,8 +54,8 @@
 
                     <div class="mb-5 flex items-center justify-between">
 
-                        <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary-100 text-2xl">
-                            📚
+                        <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary-100 text-primary-600">
+                            <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
                         </div>
 
                         <span class="rounded-full bg-primary-50 px-3 py-1 text-xs font-bold uppercase tracking-wider text-primary-600">
@@ -90,8 +90,8 @@
 
                     <div class="mb-5 flex items-center justify-between">
 
-                        <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-100 text-2xl">
-                            ⏳
+                        <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-100 text-amber-600">
+                            <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         </div>
 
                         <span class="rounded-full bg-amber-50 px-3 py-1 text-xs font-bold uppercase tracking-wider text-amber-600">
@@ -126,8 +126,8 @@
 
                     <div class="mb-5 flex items-center justify-between">
 
-                        <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary-100 text-2xl">
-                            ✅
+                        <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary-100 text-primary-600">
+                            <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         </div>
 
                         <span class="rounded-full bg-primary-50 px-3 py-1 text-xs font-bold uppercase tracking-wider text-primary-600">
@@ -233,7 +233,7 @@
 
                                     <div class="flex items-center gap-4">
 
-                                        <div class="flex h-14 w-11 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-primary-100 bg-primary-50 text-2xl shadow-sm">
+                                        <div class="flex h-14 w-11 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-primary-100 bg-primary-50 text-primary-600 shadow-sm">
 
                                             @if ($peminjaman->buku->sampul)
 
@@ -244,7 +244,7 @@
 
                                             @else
 
-                                                📚
+                                                <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
 
                                             @endif
 
@@ -283,9 +283,9 @@
                                 {{-- JATUH TEMPO --}}
                                 <td class="px-6 py-5">
 
-                                    <span class="inline-flex rounded-full bg-amber-50 px-3 py-1.5 text-xs font-bold text-amber-700">
+                                    <span class="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1.5 text-xs font-bold text-amber-700">
 
-                                        📅
+                                        <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
                                         {{ \Carbon\Carbon::parse($peminjaman->tanggal_jatuh_tempo)->format('d M Y') }}
 
                                     </span>
@@ -302,7 +302,7 @@
 
                                             <span class="h-1.5 w-1.5 rounded-full bg-blue-500"></span>
 
-                                            ⏳ Dipinjam
+                                            Dipinjam
 
                                         </span>
 
@@ -312,7 +312,7 @@
 
                                             <span class="h-1.5 w-1.5 rounded-full bg-primary-500"></span>
 
-                                            ✅ Dikembalikan
+                                            Dikembalikan
 
                                         </span>
 
@@ -329,7 +329,7 @@
                                         class="inline-flex items-center gap-2 rounded-xl bg-primary-50 px-4 py-2 text-sm font-semibold text-primary-700 transition hover:bg-primary-600 hover:text-white hover:shadow-md"
                                     >
                                         Lihat Buku
-                                        →
+                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
                                     </a>
 
                                 </td>
@@ -345,8 +345,8 @@
                                     class="px-6 py-20 text-center"
                                 >
 
-                                    <div class="mx-auto flex h-20 w-20 items-center justify-center rounded-3xl bg-primary-50 text-5xl">
-                                        📚
+                                    <div class="mx-auto flex h-20 w-20 items-center justify-center rounded-3xl bg-primary-50 text-primary-600">
+                                        <svg class="h-10 w-10" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
                                     </div>
 
                                     <h2 class="mt-5 text-xl font-bold text-primary-900">
@@ -361,7 +361,7 @@
                                         href="{{ route('buku.index') }}"
                                         class="mt-6 inline-flex items-center gap-2 rounded-xl bg-primary-600 px-5 py-3 font-semibold text-white shadow-lg shadow-primary-600/20 transition hover:bg-primary-700 hover:shadow-xl"
                                     >
-                                        📚
+                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
                                         Jelajahi Buku
                                     </a>
 
