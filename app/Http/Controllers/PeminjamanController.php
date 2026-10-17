@@ -11,9 +11,7 @@ use Illuminate\Support\Facades\DB;
 
 class PeminjamanController extends Controller
 {
-    /**
-     * Proses Pengajuan Peminjaman Buku
-     */
+   
     public function pinjam(Request $request, Buku $buku)
     {
         $user = auth()->user();
@@ -33,12 +31,6 @@ class PeminjamanController extends Controller
         ]);
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | CEK STOK
-        |--------------------------------------------------------------------------
-        */
-
         if ($buku->stok <= 0) {
 
             return back()->with(
@@ -48,12 +40,6 @@ class PeminjamanController extends Controller
 
         }
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | CEK SUDAH MENGAJUKAN / MEMINJAM BUKU INI
-        |--------------------------------------------------------------------------
-        */
 
         $sudahMeminjam = Peminjaman::where('user_id', $user->id)
             ->where('buku_id', $buku->id)
@@ -70,12 +56,6 @@ class PeminjamanController extends Controller
         }
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | MAKSIMAL 3 BUKU YANG SEDANG DIPINJAM
-        |--------------------------------------------------------------------------
-        */
-
         $jumlahDipinjam = Peminjaman::where('user_id', $user->id)
             ->where('status', 'dipinjam')
             ->count();
@@ -90,11 +70,6 @@ class PeminjamanController extends Controller
         }
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | CEK MASIH ADA BUKU TERLAMBAT
-        |--------------------------------------------------------------------------
-        */
 
         $terlambat = Peminjaman::where('user_id', $user->id)
             ->where('status', 'dipinjam')
@@ -111,11 +86,6 @@ class PeminjamanController extends Controller
         }
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | HITUNG TANGGAL
-        |--------------------------------------------------------------------------
-        */
 
         $lamaPinjam = (int) $request->lama_pinjam;
 
@@ -125,12 +95,6 @@ class PeminjamanController extends Controller
             ->copy()
             ->addDays($lamaPinjam);
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | SIMPAN PENGAJUAN PEMINJAMAN
-        |--------------------------------------------------------------------------
-        */
 
         $peminjaman = DB::transaction(function () use (
             $buku,
@@ -156,11 +120,6 @@ class PeminjamanController extends Controller
         });
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | NOTIFIKASI UNTUK USER
-        |--------------------------------------------------------------------------
-        */
 
         $user->notify(new PeminjamanNotification(
             'Pengajuan Peminjaman Dikirim',
@@ -170,11 +129,6 @@ class PeminjamanController extends Controller
         ));
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | NOTIFIKASI UNTUK ADMIN
-        |--------------------------------------------------------------------------
-        */
 
         $admins = User::where('role', 'admin')->get();
 
@@ -190,11 +144,6 @@ class PeminjamanController extends Controller
         }
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | PESAN BERHASIL
-        |--------------------------------------------------------------------------
-        */
 
         return back()->with(
             'success',
@@ -203,9 +152,7 @@ class PeminjamanController extends Controller
     }
 
 
-    /**
-     * Daftar Peminjaman Aktif Untuk Admin
-     */
+    
     public function index()
     {
         $peminjamans = Peminjaman::with([

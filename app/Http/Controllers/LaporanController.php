@@ -7,9 +7,7 @@ use Illuminate\Http\Request;
 
 class LaporanController extends Controller
 {
-    /**
-     * Menampilkan laporan perpustakaan
-     */
+    
     public function index(Request $request)
     {
         $query = Peminjaman::with([
@@ -18,11 +16,7 @@ class LaporanController extends Controller
             'pengembalian'
         ]);
 
-        /*
-        |--------------------------------------------------------------------------
-        | FILTER TANGGAL MULAI
-        |--------------------------------------------------------------------------
-        */
+        
 
         if ($request->filled('tanggal_mulai')) {
 
@@ -35,11 +29,6 @@ class LaporanController extends Controller
         }
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | FILTER TANGGAL AKHIR
-        |--------------------------------------------------------------------------
-        */
 
         if ($request->filled('tanggal_akhir')) {
 
@@ -52,11 +41,6 @@ class LaporanController extends Controller
         }
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | FILTER STATUS
-        |--------------------------------------------------------------------------
-        */
 
         if ($request->filled('status')) {
 
@@ -73,11 +57,6 @@ class LaporanController extends Controller
             ->get();
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | STATISTIK LAPORAN
-        |--------------------------------------------------------------------------
-        */
 
         $totalPeminjaman = $peminjaman->count();
 
@@ -110,9 +89,6 @@ class LaporanController extends Controller
     }
 
 
-    /**
-     * Cetak laporan
-     */
     public function print(Request $request)
     {
         $query = Peminjaman::with([

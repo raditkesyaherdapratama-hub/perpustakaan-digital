@@ -8,9 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 class PengajuanPeminjamanController extends Controller
 {
-    /**
-     * Menampilkan daftar pengajuan peminjaman
-     */
+    
     public function index()
     {
         $peminjamans = Peminjaman::with([
@@ -28,9 +26,7 @@ class PengajuanPeminjamanController extends Controller
         );
     }
 
-    /**
-     * Menyetujui pengajuan peminjaman
-     */
+    
     public function setujui(Peminjaman $peminjaman)
     {
         if ($peminjaman->status !== 'menunggu') {

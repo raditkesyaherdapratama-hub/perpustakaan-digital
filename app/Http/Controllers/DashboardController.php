@@ -11,16 +11,9 @@ use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
-    /**
-     * Dashboard Admin
-     */
+    
     public function admin()
     {
-        /*
-        |--------------------------------------------------------------------------
-        | STATISTIK UTAMA
-        |--------------------------------------------------------------------------
-        */
 
         $totalBuku = Buku::count();
 
@@ -37,11 +30,6 @@ class DashboardController extends Controller
         $totalPengembalian = Pengembalian::count();
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | BUKU TERLAMBAT
-        |--------------------------------------------------------------------------
-        */
 
         $bukuTerlambat = Peminjaman::where(
             'status',
@@ -55,23 +43,10 @@ class DashboardController extends Controller
             ->count();
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | TOTAL DENDA (DIUBAH DI SINI)
-        |--------------------------------------------------------------------------
-        | Hanya menjumlahkan denda yang nilainya > 0 (belum dilunasi/diselesaikan).
-        | Jika denda sudah diset jadi 0 oleh admin, maka tidak akan ikut terhitung.
-        |--------------------------------------------------------------------------
-        */
 
         $totalDenda = Pengembalian::where('denda', '>', 0)->sum('denda');
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | PEMINJAMAN TERBARU
-        |--------------------------------------------------------------------------
-        */
 
         $peminjamanTerbaru = Peminjaman::with([
             'user',
@@ -82,11 +57,6 @@ class DashboardController extends Controller
             ->get();
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | BUKU TERPOPULER
-        |--------------------------------------------------------------------------
-        */
 
         $bukuPopuler = Buku::withCount('peminjaman')
             ->orderByDesc('peminjaman_count')
@@ -94,11 +64,6 @@ class DashboardController extends Controller
             ->get();
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | GRAFIK PEMINJAMAN
-        |--------------------------------------------------------------------------
-        */
 
         $grafikPeminjaman = Peminjaman::select(
             DB::raw('MONTH(tanggal_pinjam) as bulan'),
@@ -156,9 +121,6 @@ class DashboardController extends Controller
     }
 
 
-    /**
-     * Dashboard User
-     */
     public function user()
     {
         return view('user.dashboard');

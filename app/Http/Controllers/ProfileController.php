@@ -10,9 +10,7 @@ use Illuminate\Validation\Rule;
 
 class ProfileController extends Controller
 {
-    /**
-     * Halaman profile
-     */
+    
     public function index()
     {
         $user = Auth::user();
@@ -20,9 +18,7 @@ class ProfileController extends Controller
         return view('profile.index', compact('user'));
     }
 
-    /**
-     * Update data profile
-     */
+    
     public function update(Request $request)
     {
         $user = Auth::user();
@@ -62,11 +58,6 @@ class ProfileController extends Controller
         $user->name = $validated['name'];
         $user->email = $validated['email'];
 
-        /*
-        |--------------------------------------------------------------------------
-        | FOTO PROFILE
-        |--------------------------------------------------------------------------
-        */
 
         if ($request->hasFile('profile_photo')) {
 
@@ -93,9 +84,6 @@ class ProfileController extends Controller
         );
     }
 
-    /**
-     * Update password
-     */
     public function updatePassword(Request $request)
     {
         $request->validate([
@@ -118,11 +106,7 @@ class ProfileController extends Controller
 
         $user = Auth::user();
 
-        /*
-        |--------------------------------------------------------------------------
-        | CEK PASSWORD LAMA
-        |--------------------------------------------------------------------------
-        */
+        
 
         if (!Hash::check(
             $request->current_password,
@@ -135,11 +119,7 @@ class ProfileController extends Controller
                 ]);
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | SIMPAN PASSWORD BARU
-        |--------------------------------------------------------------------------
-        */
+        
 
         $user->password = Hash::make(
             $request->password

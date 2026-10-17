@@ -10,9 +10,7 @@ use Illuminate\Support\Facades\Auth;
 
 class BukuController extends Controller
 {
-    /**
-     * Menampilkan semua data buku
-     */
+    
     public function index(Request $request)
     {
         $query = Buku::with('kategori');
@@ -29,16 +27,10 @@ class BukuController extends Controller
             });
         }
 
-        // Filter kategori
+        
         if ($request->filled('kategori_id')) {
             $query->where('kategori_id', $request->kategori_id);
         }
-
-        /*
-        |--------------------------------------------------------------------------
-        | STATISTIK BUKU
-        |--------------------------------------------------------------------------
-        */
 
         $totalBuku = Buku::count();
 
@@ -64,9 +56,7 @@ class BukuController extends Controller
         ));
     }
 
-    /**
-     * Form tambah buku
-     */
+    
     public function create()
     {
         $kategoris = Kategori::orderBy('nama_kategori')->get();
@@ -75,9 +65,7 @@ class BukuController extends Controller
         return view('buku.create', compact('kategoris', 'user'));
     }
 
-    /**
-     * Simpan data buku
-     */
+   
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -92,7 +80,7 @@ class BukuController extends Controller
             'deskripsi'   => ['nullable', 'string'],
         ]);
 
-        // Upload sampul
+        
         if ($request->hasFile('sampul')) {
             $validated['sampul'] = $request->file('sampul')->store('sampul', 'public');
         }
@@ -104,9 +92,7 @@ class BukuController extends Controller
             ->with('success', 'Buku berhasil ditambahkan.');
     }
 
-    /**
-     * Detail buku
-     */
+    
     public function show(Buku $buku)
     {
         $buku->load('kategori');
@@ -114,9 +100,7 @@ class BukuController extends Controller
         return view('buku.show', compact('buku'));
     }
 
-    /**
-     * Form edit buku
-     */
+    
     public function edit(Buku $buku)
     {
         $kategoris = Kategori::orderBy('nama_kategori')->get();
@@ -124,9 +108,7 @@ class BukuController extends Controller
         return view('buku.edit', compact('buku', 'kategoris'));
     }
 
-    /**
-     * Update data buku
-     */
+   
     public function update(Request $request, Buku $buku)
     {
         $validated = $request->validate([
@@ -141,7 +123,7 @@ class BukuController extends Controller
             'deskripsi'   => ['nullable', 'string'],
         ]);
 
-        // Upload sampul baru
+        
         if ($request->hasFile('sampul')) {
 
             // Hapus sampul lama jika ada
@@ -160,9 +142,7 @@ class BukuController extends Controller
             ->with('success', 'Data buku berhasil diperbarui.');
     }
 
-    /**
-     * Hapus buku
-     */
+    
     public function destroy(Buku $buku)
     {
         // Hapus file sampul jika ada
@@ -170,7 +150,7 @@ class BukuController extends Controller
             Storage::disk('public')->delete($buku->sampul);
         }
 
-        // Hapus data buku
+        
         $buku->delete();
 
         return redirect()

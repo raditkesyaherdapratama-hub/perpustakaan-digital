@@ -8,9 +8,7 @@ use Illuminate\Support\Facades\Hash;
 
 class AnggotaController extends Controller
 {
-    /**
-     * Menampilkan semua anggota
-     */
+    
     public function index(Request $request)
     {
         $query = User::where('role', 'user');
@@ -33,18 +31,13 @@ class AnggotaController extends Controller
     }
 
 
-    /**
-     * Form tambah anggota
-     */
+    
     public function create()
     {
         return view('anggota.create');
     }
 
 
-    /**
-     * Simpan anggota
-     */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -81,9 +74,7 @@ class AnggotaController extends Controller
     }
 
 
-    /**
-     * Detail anggota
-     */
+   
     public function show(User $anggota)
     {
         $anggota->load([
@@ -95,18 +86,14 @@ class AnggotaController extends Controller
     }
 
 
-    /**
-     * Form edit anggota
-     */
+    
     public function edit(User $anggota)
     {
         return view('anggota.edit', compact('anggota'));
     }
 
 
-    /**
-     * Update anggota
-     */
+    
     public function update(Request $request, User $anggota)
     {
         $validated = $request->validate([
@@ -149,9 +136,7 @@ class AnggotaController extends Controller
     }
 
 
-    /**
-     * Hapus anggota
-     */
+  
     public function destroy(User $anggota)
     {
         if ($anggota->id === auth()->id()) {

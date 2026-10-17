@@ -10,9 +10,7 @@ use Illuminate\Support\Facades\DB;
 
 class PengembalianController extends Controller
 {
-    /**
-     * Menampilkan daftar peminjaman aktif dan pengajuan
-     */
+   
     public function index()
     {
         $peminjamans = Peminjaman::with([
@@ -30,9 +28,7 @@ class PengembalianController extends Controller
         );
     }
 
-    /**
-     * Menyetujui pengajuan peminjaman
-     */
+    
     public function setujui(Peminjaman $peminjaman)
     {
         if ($peminjaman->status !== 'menunggu') {
@@ -60,9 +56,7 @@ class PengembalianController extends Controller
         return back()->with('success', 'Pengajuan peminjaman berhasil disetujui.');
     }
 
-    /**
-     * Menolak pengajuan peminjaman
-     */
+   
     public function tolak(Peminjaman $peminjaman)
     {
         if ($peminjaman->status !== 'menunggu') {
@@ -83,9 +77,7 @@ class PengembalianController extends Controller
         return back()->with('success', 'Pengajuan peminjaman berhasil ditolak.');
     }
 
-    /**
-     * Proses pengembalian buku
-     */
+    
     public function kembalikan(Peminjaman $peminjaman)
     {
         if ($peminjaman->status === 'dikembalikan') {
@@ -131,9 +123,7 @@ class PengembalianController extends Controller
         return back()->with('success', 'Buku berhasil dikembalikan.');
     }
 
-    /**
-     * Menyelesaikan / Melunasi Denda
-     */
+    
     public function lunasiDenda(Pengembalian $pengembalian)
     {
         $pengembalian->update([

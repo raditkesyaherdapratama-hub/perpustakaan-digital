@@ -9,9 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class KategoriController extends Controller
 {
-    /**
-     * Menampilkan semua kategori
-     */
+    
     public function index()
     {
         $kategoris = Kategori::withCount('buku')
@@ -23,17 +21,13 @@ class KategoriController extends Controller
         return view('kategori.index', compact('kategoris', 'user'));
     }
 
-    /**
-     * Form tambah kategori
-     */
+    
     public function create()
     {
         return view('kategori.create');
     }
 
-    /**
-     * Simpan kategori
-     */
+    
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -60,17 +54,13 @@ class KategoriController extends Controller
             ->with('success', 'Kategori berhasil ditambahkan.');
     }
 
-    /**
-     * Form edit kategori
-     */
+    
     public function edit(Kategori $kategori)
     {
         return view('kategori.edit', compact('kategori'));
     }
 
-    /**
-     * Update kategori
-     */
+   
     public function update(
         Request $request,
         Kategori $kategori
@@ -99,9 +89,7 @@ class KategoriController extends Controller
             ->with('success', 'Kategori berhasil diperbarui.');
     }
 
-    /**
-     * Hapus kategori
-     */
+    
     public function destroy(Kategori $kategori)
     {
         if ($kategori->buku()->exists()) {
