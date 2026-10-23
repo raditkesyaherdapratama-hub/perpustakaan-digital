@@ -220,40 +220,6 @@
                     @if (auth()->user()->role === 'admin')
 
 
-                        {{-- ================================================= --}}
-                        {{-- TAMBAH BUKU --}}
-                        {{-- ================================================= --}}
-
-                        <a
-                            href="{{ route('buku.create') }}"
-                            class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium text-sm transition-all
-                            {{ request()->routeIs('buku.create')
-                                ? 'text-white bg-emerald-700/80 shadow-sm border border-emerald-600/40'
-                                : 'text-emerald-100/80 hover:text-white hover:bg-emerald-800/60' }}"
-                        >
-
-                            <svg
-                                class="w-5 h-5 {{ request()->routeIs('buku.create') ? 'text-emerald-200' : 'text-emerald-300/70' }}"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                            >
-
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
-                                    d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
-                                />
-
-                            </svg>
-
-                            <span>
-                                Tambah Buku
-                            </span>
-
-                        </a>
-
 
 
                         {{-- ================================================= --}}
