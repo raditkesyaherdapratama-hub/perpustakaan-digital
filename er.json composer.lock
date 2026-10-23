@@ -1,0 +1,1117 @@
+warning: in the working copy of 'resources/views/buku/index.blade.php', CRLF will be replaced by LF the next time Git touches it
+[1mdiff --git a/app/Http/Controllers/BukuController.php b/app/Http/Controllers/BukuController.php[m
+[1mindex 90d92dc..9bb43b8 100644[m
+[1m--- a/app/Http/Controllers/BukuController.php[m
+[1m+++ b/app/Http/Controllers/BukuController.php[m
+[36m@@ -10,12 +10,14 @@[m
+ [m
+ class BukuController extends Controller[m
+ {[m
+[31m-    [m
+[32m+[m[32m    /**[m
+[32m+[m[32m     * Menampilkan koleksi buku dengan pencarian, filter, dan pagination.[m
+[32m+[m[32m     */[m
+     public function index(Request $request)[m
+     {[m
+         $query = Buku::with('kategori');[m
+ [m
+[31m-        // Search buku[m
+[32m+[m[32m        // Pencarian buku[m
+         if ($request->filled('search')) {[m
+             $search = $request->search;[m
+ [m
+[36m@@ -27,21 +29,25 @@[m [mpublic function index(Request $request)[m
+             });[m
+         }[m
+ [m
+[31m-        [m
+[32m+[m[32m        // Filter berdasarkan kategori[m
+         if ($request->filled('kategori_id')) {[m
+             $query->where('kategori_id', $request->kategori_id);[m
+         }[m
+ [m
+[32m+[m[32m        // Statistik buku[m
+         $totalBuku = Buku::count();[m
+ [m
+         $totalBukuTersedia = Buku::where('stok', '>', 0)->count();[m
+ [m
+         $totalBukuHabis = Buku::where('stok', 0)->count();[m
+ [m
+[32m+[m[32m        // Pagination: 8 buku per halaman.[m
+[32m+[m[32m        // Parameter pencarian dan kategori tetap terbawa.[m
+         $bukus = $query->latest()[m
+             ->paginate(8)[m
+             ->withQueryString();[m
+ [m
+[32m+[m[32m        // Data kategori untuk filter[m
+         $kategoris = Kategori::orderBy('nama_kategori')->get();[m
+ [m
+         $user = Auth::user();[m
+[36m@@ -56,7 +62,9 @@[m [mpublic function index(Request $request)[m
+         ));[m
+     }[m
+ [m
+[31m-    [m
+[32m+[m[32m    /**[m
+[32m+[m[32m     * Form tambah buku.[m
+[32m+[m[32m     */[m
+     public function create()[m
+     {[m
+         $kategoris = Kategori::orderBy('nama_kategori')->get();[m
+[36m@@ -65,24 +73,33 @@[m [mpublic function create()[m
+         return view('buku.create', compact('kategoris', 'user'));[m
+     }[m
+ [m
+[31m-   [m
+[32m+[m[32m    /**[m
+[32m+[m[32m     * Menyimpan buku baru.[m
+[32m+[m[32m     */[m
+     public function store(Request $request)[m
+     {[m
+         $validated = $request->validate([[m
+[31m-            'kategori_id' => ['required', 'exists:kategori,id'],[m
+[31m-            'kode_buku'   => ['required', 'string', 'max:50', 'unique:buku,kode_buku'],[m
+[31m-            'judul_buku'  => ['required', 'string', 'max:255'],[m
+[31m-            'pengarang'   => ['required', 'string', 'max:255'],[m
+[31m-            'penerbit'    => ['required', 'string', 'max:255'],[m
+[31m-            'tahun_terbit'=> ['required', 'digits:4', 'integer', 'min:1900', 'max:' . (date('Y') + 1)],[m
+[31m-            'stok'        => ['required', 'integer', 'min:0'],[m
+[31m-            'sampul'      => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],[m
+[31m-            'deskripsi'   => ['nullable', 'string'],[m
+[32m+[m[32m            'kategori_id'  => ['required', 'exists:kategori,id'],[m
+[32m+[m[32m            'kode_buku'    => ['required', 'string', 'max:50', 'unique:buku,kode_buku'],[m
+[32m+[m[32m            'judul_buku'   => ['required', 'string', 'max:255'],[m
+[32m+[m[32m            'pengarang'    => ['required', 'string', 'max:255'],[m
+[32m+[m[32m            'penerbit'     => ['required', 'string', 'max:255'],[m
+[32m+[m[32m            'tahun_terbit' => [[m
+[32m+[m[32m                'required',[m
+[32m+[m[32m                'digits:4',[m
+[32m+[m[32m                'integer',[m
+[32m+[m[32m                'min:1900',[m
+[32m+[m[32m                'max:' . (date('Y') + 1),[m
+[32m+[m[32m            ],[m
+[32m+[m[32m            'stok'         => ['required', 'integer', 'min:0'],[m
+[32m+[m[32m            'sampul'       => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],[m
+[32m+[m[32m            'deskripsi'    => ['nullable', 'string'],[m
+         ]);[m
+ [m
+[31m-        [m
+[32m+[m[32m        // Simpan sampul buku[m
+         if ($request->hasFile('sampul')) {[m
+[31m-            $validated['sampul'] = $request->file('sampul')->store('sampul', 'public');[m
+[32m+[m[32m            $validated['sampul'] = $request->file('sampul')[m
+[32m+[m[32m                ->store('sampul', 'public');[m
+         }[m
+ [m
+         Buku::create($validated);[m
+[36m@@ -92,7 +109,9 @@[m [mpublic function store(Request $request)[m
+             ->with('success', 'Buku berhasil ditambahkan.');[m
+     }[m
+ [m
+[31m-    [m
+[32m+[m[32m    /**[m
+[32m+[m[32m     * Menampilkan detail buku.[m
+[32m+[m[32m     */[m
+     public function show(Buku $buku)[m
+     {[m
+         $buku->load('kategori');[m
+[36m@@ -100,7 +119,9 @@[m [mpublic function show(Buku $buku)[m
+         return view('buku.show', compact('buku'));[m
+     }[m
+ [m
+[31m-    [m
+[32m+[m[32m    /**[m
+[32m+[m[32m     * Form edit buku.[m
+[32m+[m[32m     */[m
+     public function edit(Buku $buku)[m
+     {[m
+         $kategoris = Kategori::orderBy('nama_kategori')->get();[m
+[36m@@ -108,31 +129,42 @@[m [mpublic function edit(Buku $buku)[m
+         return view('buku.edit', compact('buku', 'kategoris'));[m
+     }[m
+ [m
+[31m-   [m
+[32m+[m[32m    /**[m
+[32m+[m[32m     * Memperbarui data buku.[m
+[32m+[m[32m     */[m
+     public function update(Request $request, Buku $buku)[m
+     {[m
+         $validated = $request->validate([[m
+[31m-            'kategori_id' => ['required', 'exists:kategori,id'],[m
+[31m-            'kode_buku'   => ['required', 'string', 'max:50', 'unique:buku,kode_buku,' . $buku->id],[m
+[31m-            'judul_buku'  => ['required', 'string', 'max:255'],[m
+[31m-            'pengarang'   => ['required', 'string', 'max:255'],[m
+[31m-            'penerbit'    => ['required', 'string', 'max:255'],[m
+[31m-            'tahun_terbit'=> ['required', 'digits:4', 'integer', 'min:1900', 'max:' . (date('Y') + 1)],[m
+[31m-            'stok'        => ['required', 'integer', 'min:0'],[m
+[31m-            'sampul'      => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],[m
+[31m-            'deskripsi'   => ['nullable', 'string'],[m
+[32m+[m[32m            'kategori_id'  => ['required', 'exists:kategori,id'],[m
+[32m+[m[32m            'kode_buku'    => [[m
+[32m+[m[32m                'required',[m
+[32m+[m[32m                'string',[m
+[32m+[m[32m                'max:50',[m
+[32m+[m[32m                'unique:buku,kode_buku,' . $buku->id,[m
+[32m+[m[32m            ],[m
+[32m+[m[32m            'judul_buku'   => ['required', 'string', 'max:255'],[m
+[32m+[m[32m            'pengarang'    => ['required', 'string', 'max:255'],[m
+[32m+[m[32m            'penerbit'     => ['required', 'string', 'max:255'],[m
+[32m+[m[32m            'tahun_terbit' => [[m
+[32m+[m[32m                'required',[m
+[32m+[m[32m                'digits:4',[m
+[32m+[m[32m                'integer',[m
+[32m+[m[32m                'min:1900',[m
+[32m+[m[32m                'max:' . (date('Y') + 1),[m
+[32m+[m[32m            ],[m
+[32m+[m[32m            'stok'         => ['required', 'integer', 'min:0'],[m
+[32m+[m[32m            'sampul'       => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],[m
+[32m+[m[32m            'deskripsi'    => ['nullable', 'string'],[m
+         ]);[m
+ [m
+[31m-        [m
+[32m+[m[32m        // Ganti sampul jika ada file baru[m
+         if ($request->hasFile('sampul')) {[m
+[31m-[m
+[31m-            // Hapus sampul lama jika ada[m
+             if ($buku->sampul) {[m
+                 Storage::disk('public')->delete($buku->sampul);[m
+             }[m
+ [m
+[31m-            // Simpan sampul baru[m
+[31m-            $validated['sampul'] = $request->file('sampul')->store('sampul', 'public');[m
+[32m+[m[32m            $validated['sampul'] = $request->file('sampul')[m
+[32m+[m[32m                ->store('sampul', 'public');[m
+         }[m
+ [m
+         $buku->update($validated);[m
+[36m@@ -142,19 +174,20 @@[m [mpublic function update(Request $request, Buku $buku)[m
+             ->with('success', 'Data buku berhasil diperbarui.');[m
+     }[m
+ [m
+[31m-    [m
+[32m+[m[32m    /**[m
+[32m+[m[32m     * Menghapus buku.[m
+[32m+[m[32m     */[m
+     public function destroy(Buku $buku)[m
+     {[m
+[31m-        // Hapus file sampul jika ada[m
+[32m+[m[32m        // Hapus file sampul dari storage[m
+         if ($buku->sampul) {[m
+             Storage::disk('public')->delete($buku->sampul);[m
+         }[m
+ [m
+[31m-        [m
+         $buku->delete();[m
+ [m
+         return redirect()[m
+             ->route('buku.index')[m
+             ->with('success', 'Buku berhasil dihapus.');[m
+     }[m
+[31m-}[m
+\ No newline at end of file[m
+[32m+[m[32m}[m
+[1mdiff --git a/composer.json b/composer.json[m
+[1mindex 3303074..229cbb8 100644[m
+[1m--- a/composer.json[m
+[1m+++ b/composer.json[m
+[36m@@ -9,7 +9,8 @@[m
+         "php": "^8.2",[m
+         "f9webltd/simple-qrcode": "^5.0",[m
+         "laravel/framework": "^12.0",[m
+[31m-        "laravel/tinker": "^2.10.1"[m
+[32m+[m[32m        "laravel/tinker": "^2.10.1",[m
+[32m+[m[32m        "maatwebsite/excel": "^3.1"[m
+     },[m
+     "require-dev": {[m
+         "fakerphp/faker": "^1.23",[m
+[1mdiff --git a/composer.lock b/composer.lock[m
+[1mindex abaea97..b36edfb 100644[m
+[1m--- a/composer.lock[m
+[1m+++ b/composer.lock[m
+[36m@@ -4,7 +4,7 @@[m
+         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",[m
+         "This file is @generated automatically"[m
+     ],[m
+[31m-    "content-hash": "173cdb3cae10b4bb73429224a936fcbc",[m
+[32m+[m[32m    "content-hash": "4bae1f1f2d1f11846fd16b37ab860bed",[m
+     "packages": [[m
+         {[m
+             "name": "bacon/bacon-qr-code",[m
+[36m@@ -190,6 +190,159 @@[m
+             ],[m
+             "time": "2024-02-09T16:56:22+00:00"[m
+         },[m
+[32m+[m[32m        {[m
+[32m+[m[32m            "name": "composer/pcre",[m
+[32m+[m[32m            "version": "3.4.0",[m
+[32m+[m[32m            "source": {[m
+[32m+[m[32m                "type": "git",[m
+[32m+[m[32m                "url": "https://github.com/composer/pcre.git",[m
+[32m+[m[32m                "reference": "d5a341b3fb61f3001970940afb1d332968a183ed"[m
+[32m+[m[32m            },[m
+[32m+[m[32m            "dist": {[m
+[32m+[m[32m                "type": "zip",[m
+[32m+[m[32m                "url": "https://api.github.com/repos/composer/pcre/zipball/d5a341b3fb61f3001970940afb1d332968a183ed",[m
+[32m+[m[32m                "reference": "d5a341b3fb61f3001970940afb1d332968a183ed",[m
+[32m+[m[32m                "shasum": ""[m
+[32m+[m[32m            },[m
+[32m+[m[32m            "require": {[m
+[32m+[m[32m                "php": "^7.4 || ^8.0"[m
+[32m+[m[32m            },[m
+[32m+[m[32m            "conflict": {[m
+[32m+[m[32m                "phpstan/phpstan": "<2.2.2"[m
+[32m+[m[32m            },[m
+[32m+[m[32m            "require-dev": {[m
+[32m+[m[32m                "phpstan/phpstan": "^2",[m
+[32m+[m[32m                "phpstan/phpstan-deprecation-rules": "^2",[m
+[32m+[m[32m                "phpstan/phpstan-strict-rules": "^2",[m
+[32m+[m[32m                "phpunit/phpunit": "^9"[m
+[32m+[m[32m            },[m
+[32m+[m[32m            "type": "library",[m
+[32m+[m[32m            "extra": {[m
+[32m+[m[32m                "phpstan": {[m
+[32m+[m[32m                    "includes": [[m
+[32m+[m[32m                        "extension.neon"[m
+[32m+[m[32m                    ][m
+[32m+[m[32m                },[m
+[32m+[m[32m                "branch-alias": {[m
+[32m+[m[32m                    "dev-main": "3.x-dev"[m
+[32m+[m[32m                }[m
+[32m+[m[32m            },[m
+[32m+[m[32m            "autoload": {[m
+[32m+[m[32m                "psr-4": {[m
+[32m+[m[32m                    "Composer\\Pcre\\": "src"[m
+[32m+[m[32m                }[m
+[32m+[m[32m            },[m
+[32m+[m[32m            "notification-url": "https://packagist.org/downloads/",[m
+[32m+[m[32m            "license": [[m
+[32m+[m[32m                "MIT"[m
+[32m+[m[32m            ],[m
+[32m+[m[32m            "authors": [[m
+[32m+[m[32m                {[m
+[32m+[m[32m                    "name": "Jordi Boggiano",[m
+[32m+[m[32m                    "email": "j.boggiano@seld.be",[m
+[32m+[m[32m                    "homepage": "http://seld.be"[m
+[32m+[m[32m                }[m
+[32m+[m[32m            ],[m
+[32m+[m[32m            "description": "PCRE wrapping library that offers type-safe preg_* replacements.",[m
+[32m+[m[32m            "keywords": [[m
+[32m+[m[32m                "PCRE",[m
+[32m+[m[32m                "preg",[m
+[32m+[m[32m                "regex",[m
+[32m+[m[32m                "regular expression"[m
+[32m+[m[32m            ],[m
+[32m+[m[32m            "support": {[m
+[32m+[m[32m                "issues": "https://github.com/composer/pcre/issues",[m
+[32m+[m[32m                "source": "https://github.com/composer/pcre/tree/3.4.0"[m
+[32m+[m[32m            },[m
+[32m+[m[32m            "funding": [[m
+[32m+[m[32m                {[m
+[32m+[m[32m                    "url": "https://packagist.com",[m
+[32m+[m[32m                    "type": "custom"[m
+[32m+[m[32m                },[m
+[32m+[m[32m                {[m
+[32m+[m[32m                    "url": "https://github.com/composer",[m
+[32m+[m[32m                    "type": "github"[m
+[32m+[m[32m                }[m
+[32m+[m[32m            ],[m
+[32m+[m[32m            "time": "2026-06-07T11:47:49+00:00"[m
+[32m+[m[32m        },[m
+[32m+[m[32m        {[m
+[32m+[m[32m            "name": "composer/semver",[m
+[32m+[m[32m            "version": "3.5.2",[m
+[32m+[m[32m            "source": {[m
+[32m+[m[32m                "type": "git",[m
+[32m+[m[32m                "url": "https://github.com/composer/semver.git",[m
+[32m+[m[32m                "reference": "9dfce66f1e97360ea5e6d3e38ab14277e4cc591e"[m
+[32m+[m[32m            },[m
+[32m+[m[32m            "dist": {[m
+[32m+[m[32m                "type": "zip",[m
+[32m+[m[32m                "url": "https://api.github.com/repos/composer/semver/zipball/9dfce66f1e97360ea5e6d3e38ab14277e4cc591e",[m
+[32m+[m[32m                "reference": "9dfce66f1e97360ea5e6d3e38ab14277e4cc591e",[m
+[32m+[m[32m                "shasum": ""[m
+[32m+[m[32m            },[m
+[32m+[m[32m            "require": {[m
+[32m+[m[32m                "php": "^5.3.2 || ^7.0 || ^8.0"[m
+[32m+[m[32m            },[m
+[32m+[m[32m            "require-dev": {[m
+[32m+[m[32m                "phpstan/phpstan": "^1.11",[m
+[32m+[m[32m                "symfony/phpunit-bridge": "^3 || ^7"[m
+[32m+[m[32m            },[m
+[32m+[m[32m            "type": "library",[m
+[32m+[m[32m            "extra": {[m
+[32m+[m[32m                "branch-alias": {[m
+[32m+[m[32m                    "dev-main": "3.x-dev"[m
+[32m+[m[32m                }[m
+[32m+[m[32m            },[m
+[32m+[m[32m            "autoload": {[m
+[32m+[m[32m                "psr-4": {[m
+[32m+[m[32m                    "Composer\\Semver\\": "src"[m
+[32m+[m[32m                }[m
+[32m+[m[32m            },[m
+[32m+[m[32m            "notification-url": "https://packagist.org/downloads/",[m
+[32m+[m[32m            "license": [[m
+[32m+[m[32m                "MIT"[m
+[32m+[m[32m            ],[m
+[32m+[m[32m            "authors": [[m
+[32m+[m[32m                {[m
+[32m+[m[32m                    "name": "Nils Adermann",[m
+[32m+[m[32m                    "email": "naderman@naderman.de",[m
+[32m+[m[32m                    "homepage": "http://www.naderman.de"[m
+[32m+[m[32m                },[m
+[32m+[m[32m                {[m
+[32m+[m[32m                    "name": "Jordi Boggiano",[m
+[32m+[m[32m                    "email": "j.boggiano@seld.be",[m
+[32m+[m[32m                    "homepage": "http://seld.be"[m
+[32m+[m[32m                },[m
+[32m+[m[32m                {[m
+[32m+[m[32m                    "name": "Rob Bast",[m
+[32m+[m[32m                    "email": "rob.bast@gmail.com",[m
+[32m+[m[32m                    "homepage": "http://robbast.nl"[m
+[32m+[m[32m                }[m
+[32m+[m[32m            ],[m
+[32m+[m[32m            "description": "Version comparison library that offers utilities, version constraint parsing and validation.",[m
+[32m+[m[32m            "keywords": [[m
+[32m+[m[32m                "semantic",[m
+[32m+[m[32m                "semver",[m
+[32m+[m[32m                "validation",[m
+[32m+[m[32m                "versioning"[m
+[32m+[m[32m            ],[m
+[32m+[m[32m            "support": {[m
+[32m+[m[32m                "irc": "ircs://irc.libera.chat:6697/composer",[m
+[32m+[m[32m                "issues": "https://github.com/composer/semver/issues",[m
+[32m+[m[32m                "source": "https://github.com/composer/semver/tree/3.5.2"[m
+[32m+[m[32m            },[m
+[32m+[m[32m            "funding": [[m
+[32m+[m[32m                {[m
+[32m+[m[32m                    "url": "https://packagist.com",[m
+[32m+[m[32m                    "type": "custom"[m
+[32m+[m[32m                },[m
+[32m+[m[32m                {[m
+[32m+[m[32m                    "url": "https://github.com/composer",[m
+[32m+[m[32m                    "type": "github"[m
+[32m+[m[32m                }[m
+[32m+[m[32m            ],[m
+[32m+[m[32m            "time": "2026-10-22T15:37:26+00:00"[m
+[32m+[m[32m        },[m
+         {[m
+             "name": "dasprid/enum",[m
+             "version": "1.0.7",[m
+[36m@@ -613,6 +766,67 @@[m
+             ],[m
+             "time": "2025-03-06T22:45:56+00:00"[m
+         },[m
+[32m+[m[32m        {[m
+[32m+[m[32m            "name": "ezyang/htmlpurifier",[m
+[32m+[m[32m            "version": "v4.19.1",[m
+[32m+[m[32m            "source": {[m
+[32m+[m[32m                "type": "git",[m
+[32m+[m[32m                "url": "https://github.com/ezyang/htmlpurifier.git",[m
+[32m+[m[32m                "reference": "5e0539132d934f936fbae2c88b55d58f9438623f"[m
+[32m+[m[32m            },[m
+[32m+[m[32m            "dist": {[m
+[32m+[m[32m                "type": "zip",[m
+[32m+[m[32m                "url": "https://api.github.com/repos/ezyang/htmlpurifier/zipball/5e0539132d934f936fbae2c88b55d58f9438623f",[m
+[32m+[m[32m                "reference": "5e0539132d934f936fbae2c88b55d58f9438623f",[m
+[32m+[m[32m                "shasum": ""[m
+[32m+[m[32m            },[m
+[32m+[m[32m            "require": {[m
+[32m+[m[32m                "php": "~5.6.0 || ~7.0.0 || ~7.1.0 || ~7.2.0 || ~7.3.0 || ~7.4.0 || ~8.0.0 || ~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0"[m
+[32m+[m[32m            },[m
+[32m+[m[32m            "require-dev": {[m
+[32m+[m[32m                "cerdic/css-tidy": "^1.7 || ^2.0",[m
+[32m+[m[32m                "simpletest/simpletest": "dev-master"[m
+[32m+[m[32m            },[m
+[32m+[m[32m            "suggest": {[m
+[32m+[m[32m                "cerdic/css-tidy": "If you want to use the filter 'Filter.ExtractStyleBlocks'.",[m
+[32m+[m[32m                "ext-bcmath": "Used for unit conversion and imagecrash protection",[m
+[32m+[m[32m                "ext-iconv": "Converts text to and from non-UTF-8 encodings",[m
+[32m+[m[32m                "ext-tidy": "Used for pretty-printing HTML"[m
+[32m+[m[32m            },[m
+[32m+[m[32m            "type": "library",[m
+[32m+[m[32m            "autoload": {[m
+[32m+[m[32m                "files": [[m
+[32m+[m[32m                    "library/HTMLPurifier.composer.php"[m
+[32m+[m[32m                ],[m
+[32m+[m[32m                "psr-0": {[m
+[32m+[m[32m                    "HTMLPurifier": "library/"[m
+[32m+[m[32m                },[m
+[32m+[m[32m                "exclude-from-classmap": [[m
+[32m+[m[32m                    "/library/HTMLPurifier/Language/"[m
+[32m+[m[32m                ][m
+[32m+[m[32m            },[m
+[32m+[m[32m            "notification-url": "https://packagist.org/downloads/",[m
+[32m+[m[32m            "license": [[m
+[32m+[m[32m                "LGPL-2.1-or-later"[m
+[32m+[m[32m            ],[m
+[32m+[m[32m            "authors": [[m
+[32m+[m[32m                {[m
+[32m+[m[32m                    "name": "Edward Z. Yang",[m
+[32m+[m[32m                    "email": "admin@htmlpurifier.org",[m
+[32m+[m[32m                    "homepage": "http://ezyang.com"[m
+[32m+[m[32m                }[m
+[32m+[m[32m            ],[m
+[32m+[m[32m            "description": "Standards compliant HTML filter written in PHP",[m
+[32m+[m[32m            "homepage": "http://htmlpurifier.org/",[m
+[32m+[m[32m            "keywords": [[m
+[32m+[m[32m                "html"[m
+[32m+[m[32m            ],[m
+[32m+[m[32m            "support": {[m
+[32m+[m[32m                "issues": "https://github.com/ezyang/htmlpurifier/issues",[m
+[32m+[m[32m                "source": "https://github.com/ezyang/htmlpurifier/tree/v4.19.1"[m
+[32m+[m[32m            },[m
+[32m+[m[32m            "time": "2026-09-15T15:42:51+00:00"[m
+[32m+[m[32m        },[m
+         {[m
+             "name": "f9webltd/simple-qrcode",[m
+             "version": "5.0.0",[m
+[36m@@ -2204,6 +2418,272 @@[m
+             ],[m
+             "time": "2026-03-08T20:05:35+00:00"[m
+         },[m
+[32m+[m[32m        {[m
+[32m+[m[32m            "name": "maatwebsite/excel",[m
+[32m+[m[32m            "version": "3.1.70",[m
+[32m+[m[32m            "source": {[m
+[32m+[m[32m                "type": "git",[m
+[32m+[m[32m                "url": "https://github.com/SpartnerNL/Laravel-Excel.git",[m
+[32m+[m[32m                "reference": "b5cafdfcf7ec63924e83303763be8fcae340f70b"[m
+[32m+[m[32m            },[m
+[32m+[m[32m            "dist": {[m
+[32m+[m[32m                "type": "zip",[m
+[32m+[m[32m                "url": "https://api.github.com/repos/SpartnerNL/Laravel-Excel/zipball/b5cafdfcf7ec63924e83303763be8fcae340f70b",[m
+[32m+[m[32m                "reference": "b5cafdfcf7ec63924e83303763be8fcae340f70b",[m
+[32m+[m[32m                "shasum": ""[m
+[32m+[m[32m            },[m
+[32m+[m[32m            "require": {[m
+[32m+[m[32m                "composer/semver": "^3.3",[m
+[32m+[m[32m                "ext-json": "*",[m
+[32m+[m[32m                "illuminate/support": "5.8.*||^6.0||^7.0||^8.0||^9.0||^10.0||^11.0||^12.0||^13.0",[m
+[32m+[m[32m                "php": "^7.0||^8.0",[m
+[32m+[m[32m                "phpoffice/phpspreadsheet": "^1.30.5",[m
+[32m+[m[32m                "psr/simple-cache": "^1.0||^2.0||^3.0"[m
+[32m+[m[32m            },[m
+[32m+[m[32m            "require-dev": {[m
+[32m+[m[32m                "laravel/scout": "^7.0||^8.0||^9.0||^10.0||^11.0",[m
+[32m+[m[32m                "orchestra/testbench": "^6.0||^7.0||^8.0||^9.0||^10.0||^11.0",[m
+[32m+[m[32m                "predis/predis": "^1.1"[m
+[32m+[m[32m            },[m
+[32m+[m[32m            "type": "library",[m
+[32m+[m[32m            "extra": {[m
+[32m+[m[32m                "laravel": {[m
+[32m+[m[32m                    "aliases": {[m
+[32m+[m[32m                        "Excel": "Maatwebsite\\Excel\\Facades\\Excel"[m
+[32m+[m[32m                    },[m
+[32m+[m[32m                    "providers": [[m
+[32m+[m[32m                        "Maatwebsite\\Excel\\ExcelServiceProvider"[m
+[32m+[m[32m                    ][m
+[32m+[m[32m                }[m
+[32m+[m[32m            },[m
+[32m+[m[32m            "autoload": {[m
+[32m+[m[32m                "psr-4": {[m
+[32m+[m[32m                    "Maatwebsite\\Excel\\": "src/"[m
+[32m+[m[32m                }[m
+[32m+[m[32m            },[m
+[32m+[m[32m            "notification-url": "https://packagist.org/downloads/",[m
+[32m+[m[32m            "license": [[m
+[32m+[m[32m                "MIT"[m
+[32m+[m[32m            ],[m
+[32m+[m[32m            "authors": [[m
+[32m+[m[32m                {[m
+[32m+[m[32m                    "name": "Patrick Brouwers",[m
+[32m+[m[32m                    "email": "patrick@spartner.nl"[m
+[32m+[m[32m                }[m
+[32m+[m[32m            ],[m
+[32m+[m[32m            "description": "Supercharged Excel exports and imports in Laravel",[m
+[32m+[m[32m            "keywords": [[m
+[32m+[m[32m                "PHPExcel",[m
+[32m+[m[32m                "batch",[m
+[32m+[m[32m                "csv",[m
+[32m+[m[32m                "excel",[m
+[32m+[m[32m                "export",[m
+[32m+[m[32m                "import",[m
+[32m+[m[32m                "laravel",[m
+[32m+[m[32m                "php",[m
+[32m+[m[32m                "phpspreadsheet"[m
+[32m+[m[32m            ],[m
+[32m+[m[32m            "support": {[m
+[32m+[m[32m                "issues": "https://github.com/SpartnerNL/Laravel-Excel/issues",[m
+[32m+[m[32m                "source": "https://github.com/SpartnerNL/Laravel-Excel/tree/3.1.70"[m
+[32m+[m[32m            },[m
+[32m+[m[32m            "funding": [[m
+[32m+[m[32m                {[m
+[32m+[m[32m                    "url": "https://laravel-excel.com/commercial-support",[m
+[32m+[m[32m                    "type": "custom"[m
+[32m+[m[32m                },[m
+[32m+[m[32m                {[m
+[32m+[m[32m                    "url": "https://github.com/patrickbrouwers",[m
+[32m+[m[32m                    "type": "github"[m
+[32m+[m[32m                }[m
+[32m+[m[32m            ],[m
+[32m+[m[32m            "time": "2026-08-13T09:11:54+00:00"[m
+[32m+[m[32m        },[m
+[32m+[m[32m        {[m
+[32m+[m[32m            "name": "maennchen/zipstream-php",[m
+[32m+[m[32m            "version": "3.1.2",[m
+[32m+[m[32m            "source": {[m
+[32m+[m[32m                "type": "git",[m
+[32m+[m[32m                "url": "https://github.com/maennchen/ZipStream-PHP.git",[m
+[32m+[m[32m                "reference": "aeadcf5c412332eb426c0f9b4485f6accba2a99f"[m
+[32m+[m[32m            },[m
+[32m+[m[32m            "dist": {[m
+[32m+[m[32m                "type": "zip",[m
+[32m+[m[32m                "url": "https://api.github.com/repos/maennchen/ZipStream-PHP/zipball/aeadcf5c412332eb426c0f9b4485f6accba2a99f",[m
+[32m+[m[32m                "reference": "aeadcf5c412332eb426c0f9b4485f6accba2a99f",[m
+[32m+[m[32m                "shasum": ""[m
+[32m+[m[32m            },[m
+[32m+[m[32m            "require": {[m
+[32m+[m[32m                "ext-mbstring": "*",[m
+[32m+[m[32m                "ext-zlib": "*",[m
+[32m+[m[32m                "php-64bit": "^8.2"[m
+[32m+[m[32m            },[m
+[32m+[m[32m            "require-dev": {[m
+[32m+[m[32m                "brianium/paratest": "^7.7",[m
+[32m+[m[32m                "ext-zip": "*",[m
+[32m+[m[32m                "friendsofphp/php-cs-fixer": "^3.16",[m
+[32m+[m[32m                "guzzlehttp/guzzle": "^7.5",[m
+[32m+[m[32m                "mikey179/vfsstream": "^1.6",[m
+[32m+[m[32m                "php-coveralls/php-coveralls": "^2.5",[m
+[32m+[m[32m                "phpunit/phpunit": "^11.0",[m
+[32m+[m[32m                "vimeo/psalm": "^6.0"[m
+[32m+[m[32m            },[m
+[32m+[m[32m            "suggest": {[m
+[32m+[m[32m                "guzzlehttp/psr7": "^2.4",[m
+[32m+[m[32m                "psr/http-message": "^2.0"[m
+[32m+[m[32m            },[m
+[32m+[m[32m            "type": "library",[m
+[32m+[m[32m            "autoload": {[m
+[32m+[m[32m                "psr-4": {[m
+[32m+[m[32m                    "ZipStream\\": "src/"[m
+[32m+[m[32m                }[m
+[32m+[m[32m            },[m
+[32m+[m[32m            "notification-url": "https://packagist.org/downloads/",[m
+[32m+[m[32m            "license": [[m
+[32m+[m[32m                "MIT"[m
+[32m+[m[32m            ],[m
+[32m+[m[32m            "authors": [[m
+[32m+[m[32m                {[m
+[32m+[m[32m                    "name": "Paul Duncan",[m
+[32m+[m[32m                    "email": "pabs@pablotron.org"[m
+[32m+[m[32m                },[m
+[32m+[m[32m                {[m
+[32m+[m[32m                    "name": "Jonatan Männchen",[m
+[32m+[m[32m                    "email": "jonatan@maennchen.ch"[m
+[32m+[m[32m                },[m
+[32m+[m[32m                {[m
+[32m+[m[32m                    "name": "Jesse Donat",[m
+[32m+[m[32m                    "email": "donatj@gmail.com"[m
+[32m+[m[32m                },[m
+[32m+[m[32m                {[m
+[32m+[m[32m                    "name": "András Kolesár",[m
+[32m+[m[32m                    "email": "kolesar@kolesar.hu"[m
+[32m+[m[32m                }[m
+[32m+[m[32m            ],[m
+[32m+[m[32m            "description": "ZipStream is a library for dynamically streaming dynamic zip files from PHP without writing to the disk at all on the server.",[m
+[32m+[m[32m            "keywords": [[m
+[32m+[m[32m                "stream",[m
+[32m+[m[32m                "zip"[m
+[32m+[m[32m            ],[m
+[32m+[m[32m            "support": {[m
+[32m+[m[32m                "issues": "https://github.com/maennchen/ZipStream-PHP/issues",[m
+[32m+[m[32m                "source": "https://github.com/maennchen/ZipStream-PHP/tree/3.1.2"[m
+[32m+[m[32m            },[m
+[32m+[m[32m            "funding": [[m
+[32m+[m[32m                {[m
+[32m+[m[32m                    "url": "https://github.com/maennchen",[m
+[32m+[m[32m                    "type": "github"[m
+[32m+[m[32m                }[m
+[32m+[m[32m            ],[m
+[32m+[m[32m            "time": "2025-01-27T12:07:53+00:00"[m
+[32m+[m[32m        },[m
+[32m+[m[32m        {[m
+[32m+[m[32m            "name": "markbaker/complex",[m
+[32m+[m[32m            "version": "3.0.2",[m
+[32m+[m[32m            "source": {[m
+[32m+[m[32m                "type": "git",[m
+[32m+[m[32m                "url": "https://github.com/MarkBaker/PHPComplex.git",[m
+[32m+[m[32m                "reference": "95c56caa1cf5c766ad6d65b6344b807c1e8405b9"[m
+[32m+[m[32m            },[m
+[32m+[m[32m            "dist": {[m
+[32m+[m[32m                "type": "zip",[m
+[32m+[m[32m                "url": "https://api.github.com/repos/MarkBaker/PHPComplex/zipball/95c56caa1cf5c766ad6d65b6344b807c1e8405b9",[m
+[32m+[m[32m                "reference": "95c56caa1cf5c766ad6d65b6344b807c1e8405b9",[m
+[32m+[m[32m                "shasum": ""[m
+[32m+[m[32m            },[m
+[32m+[m[32m            "require": {[m
+[32m+[m[32m                "php": "^7.2 || ^8.0"[m
+[32m+[m[32m            },[m
+[32m+[m[32m            "require-dev": {[m
+[32m+[m[32m                "dealerdirect/phpcodesniffer-composer-installer": "dev-master",[m
+[32m+[m[32m                "phpcompatibility/php-compatibility": "^9.3",[m
+[32m+[m[32m                "phpunit/phpunit": "^7.0 || ^8.0 || ^9.0",[m
+[32m+[m[32m                "squizlabs/php_codesniffer": "^3.7"[m
+[32m+[m[32m            },[m
+[32m+[m[32m            "type": "library",[m
+[32m+[m[32m            "autoload": {[m
+[32m+[m[32m                "psr-4": {[m
+[32m+[m[32m                    "Complex\\": "classes/src/"[m
+[32m+[m[32m                }[m
+[32m+[m[32m            },[m
+[32m+[m[32m            "notification-url": "https://packagist.org/downloads/",[m
+[32m+[m[32m            "license": [[m
+[32m+[m[32m                "MIT"[m
+[32m+[m[32m            ],[m
+[32m+[m[32m            "authors": [[m
+[32m+[m[32m                {[m
+[32m+[m[32m                    "name": "Mark Baker",[m
+[32m+[m[32m                    "email": "mark@lange.demon.co.uk"[m
+[32m+[m[32m                }[m
+[32m+[m[32m            ],[m
+[32m+[m[32m            "description": "PHP Class for working with complex numbers",[m
+[32m+[m[32m            "homepage": "https://github.com/MarkBaker/PHPComplex",[m
+[32m+[m[32m            "keywords": [[m
+[32m+[m[32m                "complex",[m
+[32m+[m[32m                "mathematics"[m
+[32m+[m[32m            ],[m
+[32m+[m[32m            "support": {[m
+[32m+[m[32m                "issues": "https://github.com/MarkBaker/PHPComplex/issues",[m
+[32m+[m[32m                "source": "https://github.com/MarkBaker/PHPComplex/tree/3.0.2"[m
+[32m+[m[32m            },[m
+[32m+[m[32m            "time": "2022-12-06T16:21:08+00:00"[m
+[32m+[m[32m        },[m
+[32m+[m[32m        {[m
+[32m+[m[32m            "name": "markbaker/matrix",[m
+[32m+[m[32m            "version": "3.0.1",[m
+[32m+[m[32m            "source": {[m
+[32m+[m[32m                "type": "git",[m
+[32m+[m[32m                "url": "https://github.com/MarkBaker/PHPMatrix.git",[m
+[32m+[m[32m                "reference": "728434227fe21be27ff6d86621a1b13107a2562c"[m
+[32m+[m[32m            },[m
+[32m+[m[32m            "dist": {[m
+[32m+[m[32m                "type": "zip",[m
+[32m+[m[32m                "url": "https://api.github.com/repos/MarkBaker/PHPMatrix/zipball/728434227fe21be27ff6d86621a1b13107a2562c",[m
+[32m+[m[32m                "reference": "728434227fe21be27ff6d86621a1b13107a2562c",[m
+[32m+[m[32m                "shasum": ""[m
+[32m+[m[32m            },[m
+[32m+[m[32m            "require": {[m
+[32m+[m[32m                "php": "^7.1 || ^8.0"[m
+[32m+[m[32m            },[m
+[32m+[m[32m            "require-dev": {[m
+[32m+[m[32m                "dealerdirect/phpcodesniffer-composer-installer": "dev-master",[m
+[32m+[m[32m                "phpcompatibility/php-compatibility": "^9.3",[m
+[32m+[m[32m                "phpdocumentor/phpdocumentor": "2.*",[m
+[32m+[m[32m                "phploc/phploc": "^4.0",[m
+[32m+[m[32m                "phpmd/phpmd": "2.*",[m
+[32m+[m[32m                "phpunit/phpunit": "^7.0 || ^8.0 || ^9.0",[m
+[32m+[m[32m                "sebastian/phpcpd": "^4.0",[m
+[32m+[m[32m                "squizlabs/php_codesniffer": "^3.7"[m
+[32m+[m[32m            },[m
+[32m+[m[32m            "type": "library",[m
+[32m+[m[32m            "autoload": {[m
+[32m+[m[32m                "psr-4": {[m
+[32m+[m[32m                    "Matrix\\": "classes/src/"[m
+[32m+[m[32m                }[m
+[32m+[m[32m            },[m
+[32m+[m[32m            "notification-url": "https://packagist.org/downloads/",[m
+[32m+[m[32m            "license": [[m
+[32m+[m[32m                "MIT"[m
+[32m+[m[32m            ],[m
+[32m+[m[32m            "authors": [[m
+[32m+[m[32m                {[m
+[32m+[m[32m                    "name": "Mark Baker",[m
+[32m+[m[32m                    "email": "mark@demon-angel.eu"[m
+[32m+[m[32m                }[m
+[32m+[m[32m            ],[m
+[32m+[m[32m            "description": "PHP Class for working with matrices",[m
+[32m+[m[32m            "homepage": "https://github.com/MarkBaker/PHPMatrix",[m
+[32m+[m[32m            "keywords": [[m
+[32m+[m[32m                "mathematics",[m
+[32m+[m[32m                "matrix",[m
+[32m+[m[32m                "vector"[m
+[32m+[m[32m            ],[m
+[32m+[m[32m            "support": {[m
+[32m+[m[32m                "issues": "https://github.com/MarkBaker/PHPMatrix/issues",[m
+[32m+[m[32m                "source": "https://github.com/MarkBaker/PHPMatrix/tree/3.0.1"[m
+[32m+[m[32m            },[m
+[32m+[m[32m            "time": "2022-12-02T22:17:43+00:00"[m
+[32m+[m[32m        },[m
+         {[m
+             "name": "monolog/monolog",[m
+             "version": "3.10.0",[m
+[36m@@ -2714,6 +3194,114 @@[m
+             ],[m
+             "time": "2026-02-16T23:10:27+00:00"[m
+         },[m
+[32m+[m[32m        {[m
+[32m+[m[32m            "name": "phpoffice/phpspreadsheet",[m
+[32m+[m[32m            "version": "1.30.7",[m
+[32m+[m[32m            "source": {[m
+[32m+[m[32m                "type": "git",[m
+[32m+[m[32m                "url": "https://github.com/PHPOffice/PhpSpreadsheet.git",[m
+[32m+[m[32m                "reference": "f5dd9c1f084d336ea63cf53099533e061a9c157a"[m
+[32m+[m[32m            },[m
+[32m+[m[32m            "dist": {[m
+[32m+[m[32m                "type": "zip",[m
+[32m+[m[32m                "url": "https://api.github.com/repos/PHPOffice/PhpSpreadsheet/zipball/f5dd9c1f084d336ea63cf53099533e061a9c157a",[m
+[32m+[m[32m                "reference": "f5dd9c1f084d336ea63cf53099533e061a9c157a",[m
+[32m+[m[32m                "shasum": ""[m
+[32m+[m[32m            },[m
+[32m+[m[32m            "require": {[m
+[32m+[m[32m                "composer/pcre": "^1||^2||^3",[m
+[32m+[m[32m                "ext-ctype": "*",[m
+[32m+[m[32m                "ext-dom": "*",[m
+[32m+[m[32m                "ext-fileinfo": "*",[m
+[32m+[m[32m                "ext-gd": "*",[m
+[32m+[m[32m                "ext-iconv": "*",[m
+[32m+[m[32m                "ext-libxml": "*",[m
+[32m+[m[32m                "ext-mbstring": "*",[m
+[32m+[m[32m                "ext-simplexml": "*",[m
+[32m+[m[32m                "ext-xml": "*",[m
+[32m+[m[32m                "ext-xmlreader": "*",[m
+[32m+[m[32m                "ext-xmlwriter": "*",[m
+[32m+[m[32m                "ext-zip": "*",[m
+[32m+[m[32m                "ext-zlib": "*",[m
+[32m+[m[32m                "ezyang/htmlpurifier": "^4.15",[m
+[32m+[m[32m                "maennchen/zipstream-php": "^2.1 || ^3.0",[m
+[32m+[m[32m                "markbaker/complex": "^3.0",[m
+[32m+[m[32m                "markbaker/matrix": "^3.0",[m
+[32m+[m[32m                "php": ">=7.4.0 <8.5.0",[m
+[32m+[m[32m                "psr/simple-cache": "^1.0 || ^2.0 || ^3.0"[m
+[32m+[m[32m            },[m
+[32m+[m[32m            "require-dev": {[m
+[32m+[m[32m                "dealerdirect/phpcodesniffer-composer-installer": "dev-main",[m
+[32m+[m[32m                "doctrine/instantiator": "^1.5",[m
+[32m+[m[32m                "dompdf/dompdf": "^1.0 || ^2.0 || ^3.0",[m
+[32m+[m[32m                "friendsofphp/php-cs-fixer": "^3.2",[m
+[32m+[m[32m                "mitoteam/jpgraph": "^10.3",[m
+[32m+[m[32m                "mpdf/mpdf": "^8.1.1",[m
+[32m+[m[32m                "phpcompatibility/php-compatibility": "^9.3",[m
+[32m+[m[32m                "phpstan/phpstan": "^1.1",[m
+[32m+[m[32m                "phpstan/phpstan-phpunit": "^1.0",[m
+[32m+[m[32m                "phpunit/phpunit": "^8.5 || ^9.0",[m
+[32m+[m[32m                "squizlabs/php_codesniffer": "^3.7",[m
+[32m+[m[32m                "tecnickcom/tcpdf": "^6.5"[m
+[32m+[m[32m            },[m
+[32m+[m[32m            "suggest": {[m
+[32m+[m[32m                "dompdf/dompdf": "Option for rendering PDF with PDF Writer",[m
+[32m+[m[32m                "ext-intl": "PHP Internationalization Functions",[m
+[32m+[m[32m                "mitoteam/jpgraph": "Option for rendering charts, or including charts with PDF or HTML Writers",[m
+[32m+[m[32m                "mpdf/mpdf": "Option for rendering PDF with PDF Writer",[m
+[32m+[m[32m                "tecnickcom/tcpdf": "Option for rendering PDF with PDF Writer"[m
+[32m+[m[32m            },[m
+[32m+[m[32m            "type": "library",[m
+[32m+[m[32m            "autoload": {[m
+[32m+[m[32m                "psr-4": {[m
+[32m+[m[32m                    "PhpOffice\\PhpSpreadsheet\\": "src/PhpSpreadsheet"[m
+[32m+[m[32m                }[m
+[32m+[m[32m            },[m
+[32m+[m[32m            "notification-url": "https://packagist.org/downloads/",[m
+[32m+[m[32m            "license": [[m
+[32m+[m[32m                "MIT"[m
+[32m+[m[32m            ],[m
+[32m+[m[32m            "authors": [[m
+[32m+[m[32m                {[m
+[32m+[m[32m                    "name": "Maarten Balliauw",[m
+[32m+[m[32m                    "homepage": "https://blog.maartenballiauw.be"[m
+[32m+[m[32m                },[m
+[32m+[m[32m                {[m
+[32m+[m[32m                    "name": "Mark Baker",[m
+[32m+[m[32m                    "homepage": "https://markbakeruk.net"[m
+[32m+[m[32m                },[m
+[32m+[m[32m                {[m
+[32m+[m[32m                    "name": "Franck Lefevre",[m
+[32m+[m[32m                    "homepage": "https://rootslabs.net"[m
+[32m+[m[32m                },[m
+[32m+[m[32m                {[m
+[32m+[m[32m                    "name": "Erik Tilt"[m
+[32m+[m[32m                },[m
+[32m+[m[32m                {[m
+[32m+[m[32m                    "name": "Adrien Crivelli"[m
+[32m+[m[32m                },[m
+[32m+[m[32m                {[m
+[32m+[m[32m                    "name": "Owen Leibman"[m
+[32m+[m[32m                }[m
+[32m+[m[32m            ],[m
+[32m+[m[32m            "description": "PHPSpreadsheet - Read, Create and Write Spreadsheet documents in PHP - Spreadsheet engine",[m
+[32m+[m[32m            "homepage": "https://github.com/PHPOffice/PhpSpreadsheet",[m
+[32m+[m[32m            "keywords": [[m
+[32m+[m[32m                "OpenXML",[m
+[32m+[m[32m                "excel",[m
+[32m+[m[32m                "gnumeric",[m
+[32m+[m[32m                "ods",[m
+[32m+[m[32m                "php",[m
+[32m+[m[32m                "spreadsheet",[m
+[32m+[m[32m                "xls",[m
+[32m+[m[32m                "xlsx"[m
+[32m+[m[32m            ],[m
+[32m+[m[32m            "support": {[m
+[32m+[m[32m                "issues": "https://github.com/PHPOffice/PhpSpreadsheet/issues",[m
+[32m+[m[32m                "source": "https://github.com/PHPOffice/PhpSpreadsheet/tree/1.30.7"[m
+[32m+[m[32m            },[m
+[32m+[m[32m            "time": "2026-09-17T03:56:23+00:00"[m
+[32m+[m[32m        },[m
+         {[m
+             "name": "phpoption/phpoption",[m
+             "version": "1.9.5",[m
+[1mdiff --git a/resources/views/buku/index.blade.php b/resources/views/buku/index.blade.php[m
+[1mindex 9631bbb..8ef760e 100644[m
+[1m--- a/resources/views/buku/index.blade.php[m
+[1m+++ b/resources/views/buku/index.blade.php[m
+[36m@@ -28,23 +28,147 @@[m
+                     </p>[m
+                 </div>[m
+ [m
+[31m-                @if (auth()->user()->role === 'admin')[m
+[31m-                    <div class="shrink-0">[m
+[31m-                        <a href="{{ route('buku.create') }}" class="inline-flex items-center gap-2 rounded-2xl bg-emerald-500 px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-emerald-900/40 transition duration-300 hover:scale-105 hover:bg-emerald-400">[m
+[32m+[m[32m                {{-- TOMBOL ADMIN --}}[m
+[32m+[m[32m                @if (auth()->check() && auth()->user()->role === 'admin')[m
+[32m+[m[32m                    <div class="flex shrink-0 flex-wrap items-center gap-3">[m
+[32m+[m
+[32m+[m[32m                        {{-- Tombol Import Excel --}}[m
+[32m+[m[32m                        <button[m
+[32m+[m[32m                            type="button"[m
+[32m+[m[32m                            onclick="document.getElementById('form-import-buku').classList.toggle('hidden')"[m
+[32m+[m[32m                            aria-controls="form-import-buku"[m
+[32m+[m[32m                            class="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/30 bg-white/10 px-5 py-3.5 text-sm font-bold text-white backdrop-blur-sm transition duration-300 hover:bg-white/20"[m
+[32m+[m[32m                        >[m
+[32m+[m[32m                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">[m
+[32m+[m[32m                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1M12 12V4m0 0L8 8m4-4l4 4"></path>[m
+[32m+[m[32m                            </svg>[m
+[32m+[m[32m                            Import Excel[m
+[32m+[m[32m                        </button>[m
+[32m+[m
+[32m+[m[32m                        {{-- Tombol Tambah Buku Baru --}}[m
+[32m+[m[32m                        <a href="{{ route('buku.create') }}"[m
+[32m+[m[32m                           class="inline-flex items-center gap-2 rounded-2xl bg-emerald-500 px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-emerald-900/40 transition duration-300 hover:scale-105 hover:bg-emerald-400">[m
+                             <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">[m
+                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path>[m
+                             </svg>[m
+                             Tambah Buku Baru[m
+                         </a>[m
+[32m+[m
+                     </div>[m
+                 @endif[m
+             </div>[m
+         </div>[m
+ [m
+[32m+[m[32m        {{-- ========================================================= --}}[m
+[32m+[m[32m        {{-- NOTIFIKASI IMPORT --}}[m
+[32m+[m[32m        {{-- ========================================================= --}}[m
+[32m+[m[32m        @if (session('success'))[m
+[32m+[m[32m            <div class="mb-6 flex items-start gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800">[m
+[32m+[m[32m                <span class="text-lg">✅</span>[m
+[32m+[m[32m                <p>{{ session('success') }}</p>[m
+[32m+[m[32m            </div>[m
+[32m+[m[32m        @endif[m
+[32m+[m
+[32m+[m[32m        @if ($errors->has('file'))[m
+[32m+[m[32m            <div class="mb-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">[m
+[32m+[m[32m                @foreach ($errors->get('file') as $error)[m
+[32m+[m[32m                    <p>{{ $error }}</p>[m
+[32m+[m[32m                @endforeach[m
+[32m+[m[32m            </div>[m
+[32m+[m[32m        @endif[m
+[32m+[m
+[32m+[m[32m        @if ($errors->has('file_import'))[m
+[32m+[m[32m            <div class="mb-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">[m
+[32m+[m[32m                <p class="mb-2 font-bold">Import buku gagal:</p>[m
+[32m+[m[32m                @foreach ($errors->get('file_import') as $error)[m
+[32m+[m[32m                    <p class="mt-1">{{ $error }}</p>[m
+[32m+[m[32m                @endforeach[m
+[32m+[m[32m            </div>[m
+[32m+[m[32m        @endif[m
+[32m+[m
+[32m+[m[32m        {{-- ========================================================= --}}[m
+[32m+[m[32m        {{-- FORM IMPORT EXCEL --}}[m
+[32m+[m[32m        {{-- ========================================================= --}}[m
+[32m+[m[32m        @if (auth()->check() && auth()->user()->role === 'admin')[m
+[32m+[m[32m            <div id="form-import-buku"[m
+[32m+[m[32m                 class="{{ $errors->has('file') || $errors->has('file_import') ? '' : 'hidden' }} mb-8 overflow-hidden rounded-3xl border border-emerald-200 bg-white shadow-sm">[m
+[32m+[m
+[32m+[m[32m                <div class="border-b border-emerald-100 bg-emerald-50/70 px-6 py-5">[m
+[32m+[m[32m                    <h2 class="text-lg font-extrabold text-emerald-950">[m
+[32m+[m[32m                        Import Koleksi Buku[m
+[32m+[m[32m                    </h2>[m
+[32m+[m[32m                    <p class="mt-1 text-sm text-slate-600">[m
+[32m+[m[32m                        Masukkan banyak data buku sekaligus menggunakan file Excel atau CSV.[m
+[32m+[m[32m                    </p>[m
+[32m+[m[32m                </div>[m
+[32m+[m
+[32m+[m[32m                <div class="p-6">[m
+[32m+[m[32m                    <form action="{{ route('buku.import') }}"[m
+[32m+[m[32m                          method="POST"[m
+[32m+[m[32m                          enctype="multipart/form-data"[m
+[32m+[m[32m                          class="space-y-5">[m
+[32m+[m
+[32m+[m[32m                        @csrf[m
+[32m+[m
+[32m+[m[32m                        <div>[m
+[32m+[m[32m                            <label for="file" class="mb-2 block text-sm font-bold text-slate-700">[m
+[32m+[m[32m                                Pilih File Excel / CSV[m
+[32m+[m[32m                            </label>[m
+[32m+[m
+[32m+[m[32m                            <input[m
+[32m+[m[32m                                type="file"[m
+[32m+[m[32m                                id="file"[m
+[32m+[m[32m                                name="file"[m
+[32m+[m[32m                                accept=".xlsx,.xls,.csv"[m
+[32m+[m[32m                                required[m
+[32m+[m[32m                                class="block w-full rounded-2xl border border-slate-200 bg-slate-50 p-3 text-sm text-slate-700 file:mr-4 file:rounded-xl file:border-0 file:bg-emerald-100 file:px-4 file:py-2 file:font-bold file:text-emerald-800 hover:file:bg-emerald-200 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/10"[m
+[32m+[m[32m                            >[m
+[32m+[m
+[32m+[m[32m                            <p class="mt-2 text-xs text-slate-500">[m
+[32m+[m[32m                                Format yang didukung: .xlsx, .xls, atau .csv. Ukuran maksimal 10 MB.[m
+[32m+[m[32m                            </p>[m
+[32m+[m[32m                        </div>[m
+[32m+[m
+[32m+[m[32m                        <div class="rounded-2xl border border-amber-200 bg-amber-50 p-4">[m
+[32m+[m[32m                            <p class="text-sm font-bold text-amber-900">[m
+[32m+[m[32m                                Perhatikan format data sebelum import[m
+[32m+[m[32m                            </p>[m
+[32m+[m[32m                            <p class="mt-1 text-sm leading-6 text-amber-800">[m
+[32m+[m[32m                                File harus memiliki kolom kode_buku, judul_buku, pengarang,[m
+[32m+[m[32m                                penerbit, tahun_terbit, stok, nama_kategori, dan deskripsi.[m
+[32m+[m[32m                                Nama kategori harus sudah tersedia di database. Kode buku harus unik.[m
+[32m+[m[32m                            </p>[m
+[32m+[m[32m                        </div>[m
+[32m+[m
+[32m+[m[32m                        <div class="flex flex-wrap gap-3">[m
+[32m+[m[32m                            <button[m
+[32m+[m[32m                                type="submit"[m
+[32m+[m[32m                                class="inline-flex items-center justify-center gap-2 rounded-2xl bg-emerald-600 px-6 py-3 text-sm font-bold text-white shadow-md transition hover:bg-emerald-700"[m
+[32m+[m[32m                            >[m
+[32m+[m[32m                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">[m
+[32m+[m[32m                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1M12 12V4m0 0L8 8m4-4l4 4"></path>[m
+[32m+[m[32m                                </svg>[m
+[32m+[m[32m                                Import Sekarang[m
+[32m+[m[32m                            </button>[m
+[32m+[m
+[32m+[m[32m                            <button[m
+[32m+[m[32m                                type="button"[m
+[32m+[m[32m                                onclick="document.getElementById('form-import-buku').classList.add('hidden')"[m
+[32m+[m[32m                                class="rounded-2xl border border-slate-200 px-6 py-3 text-sm font-bold text-slate-600 transition hover:bg-slate-50"[m
+[32m+[m[32m                            >[m
+[32m+[m[32m                                Batal[m
+[32m+[m[32m                            </button>[m
+[32m+[m[32m                        </div>[m
+[32m+[m[32m                    </form>[m
+[32m+[m[32m                </div>[m
+[32m+[m[32m            </div>[m
+[32m+[m[32m        @endif[m
+[32m+[m
+         {{-- ========================================================= --}}[m
+         {{-- STATISTIK BUKU --}}[m
+         {{-- ========================================================= --}}[m
+         <div class="mb-8 grid gap-5 sm:grid-cols-3">[m
+[32m+[m
+             {{-- TOTAL KOLEKSI --}}[m
+             <div class="group relative overflow-hidden rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-emerald-300 hover:shadow-xl hover:shadow-emerald-500/10">[m
+                 <div class="absolute -right-8 -top-8 h-28 w-28 rounded-full bg-emerald-400/10 blur-2xl transition-all duration-500 group-hover:scale-150 group-hover:bg-emerald-400/20"></div>[m
+[36m@@ -57,7 +181,7 @@[m
+                         </div>[m
+                         <span class="rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-bold tracking-wide text-emerald-700 ring-1 ring-inset ring-emerald-600/20">KOLEKSI</span>[m
+                     </div>[m
+[31m-                    <p class="text-xs font-semibold tracking-wide uppercase text-slate-400">Total Koleksi</p>[m
+[32m+[m[32m                    <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Total Koleksi</p>[m
+                     <h2 class="mt-1 text-4xl font-black tracking-tight text-emerald-950">{{ $totalBuku }}</h2>[m
+                     <p class="mt-3 text-xs text-slate-500">Seluruh buku di perpustakaan</p>[m
+                 </div>[m
+[36m@@ -75,7 +199,7 @@[m
+                         </div>[m
+                         <span class="rounded-full bg-teal-50 px-3 py-1 text-[11px] font-bold tracking-wide text-teal-700 ring-1 ring-inset ring-teal-600/20">TERSEDIA</span>[m
+                     </div>[m
+[31m-                    <p class="text-xs font-semibold tracking-wide uppercase text-slate-400">Buku Tersedia</p>[m
+[32m+[m[32m                    <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Buku Tersedia</p>[m
+                     <h2 class="mt-1 text-4xl font-black tracking-tight text-emerald-950">{{ $totalBukuTersedia }}</h2>[m
+                     <p class="mt-3 text-xs text-slate-500">Stok dapat dipinjam</p>[m
+                 </div>[m
+[36m@@ -93,7 +217,7 @@[m
+                         </div>[m
+                         <span class="rounded-full bg-red-50 px-3 py-1 text-[11px] font-bold tracking-wide text-red-700 ring-1 ring-inset ring-red-600/20">STOK HABIS</span>[m
+                     </div>[m
+[31m-                    <p class="text-xs font-semibold tracking-wide uppercase text-slate-400">Buku Habis</p>[m
+[32m+[m[32m                    <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Buku Habis</p>[m
+                     <h2 class="mt-1 text-4xl font-black tracking-tight text-emerald-950">{{ $totalBukuHabis }}</h2>[m
+                     <p class="mt-3 text-xs text-slate-500">Stok dalam perbaikan/kosong</p>[m
+                 </div>[m
+[36m@@ -129,7 +253,7 @@[m
+                     <button type="submit" class="flex-1 rounded-2xl bg-emerald-600 px-5 py-3.5 text-sm font-bold text-white shadow-md shadow-emerald-600/20 transition hover:bg-emerald-700 hover:shadow-lg">[m
+                         Cari Buku[m
+                     </button>[m
+[31m-                    @if(request('search') || request('kategori_id'))[m
+[32m+[m[32m                    @if (request('search') || request('kategori_id'))[m
+                         <a href="{{ route('buku.index') }}" class="flex items-center justify-center rounded-2xl border border-slate-200 bg-slate-100 px-4 py-3.5 text-xs font-bold text-slate-600 transition hover:bg-slate-200" title="Reset Filter">[m
+                             🔄[m
+                         </a>[m
+[36m@@ -173,7 +297,7 @@[m
+                                     </div>[m
+                                 @endif[m
+ [m
+[31m-                                {{-- FLOATING KATEGORI BADGE (KIRI ATAS) --}}[m
+[32m+[m[32m                                {{-- FLOATING KATEGORI BADGE --}}[m
+                                 @if ($item->kategori)[m
+                                     <div class="absolute left-3 top-3">[m
+                                         <span class="rounded-full bg-white/90 px-3 py-1 text-[11px] font-extrabold text-emerald-800 shadow-sm backdrop-blur-md">[m
+[36m@@ -182,11 +306,11 @@[m
+                                     </div>[m
+                                 @endif[m
+ [m
+[31m-                                {{-- FLOATING STOK BADGE (KANAN ATAS) --}}[m
+[32m+[m[32m                                {{-- FLOATING STOK BADGE --}}[m
+                                 <div class="absolute right-3 top-3">[m
+                                     @if ($item->stok > 0)[m
+                                         <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-600/90 px-3 py-1 text-xs font-bold text-white shadow-md backdrop-blur-md">[m
+[31m-                                            <span class="h-1.5 w-1.5 rounded-full bg-white animate-pulse"></span> Tersedia[m
+[32m+[m[32m                                            <span class="h-1.5 w-1.5 animate-pulse rounded-full bg-white"></span> Tersedia[m
+                                         </span>[m
+                                     @else[m
+                                         <span class="inline-flex items-center gap-1.5 rounded-full bg-red-500/90 px-3 py-1 text-xs font-bold text-white shadow-md backdrop-blur-md">[m
+[36m@@ -204,7 +328,7 @@[m
+ [m
+                                 <div class="mt-2 flex items-center gap-2 text-xs text-slate-400">[m
+                                     <span class="font-medium text-slate-500">✍️ {{ $item->pengarang }}</span>[m
+[31m-                                    @if($item->tahun_terbit)[m
+[32m+[m[32m                                    @if ($item->tahun_terbit)[m
+                                         <span>•</span>[m
+                                         <span>🗓️ {{ $item->tahun_terbit }}</span>[m
+                                     @endif[m
+[36m@@ -230,7 +354,7 @@[m
+                             <a href="{{ route('buku.show', $item->id) }}" class="flex-1 rounded-2xl bg-slate-100 py-3 text-center text-xs font-bold text-slate-700 transition duration-200 hover:bg-emerald-100 hover:text-emerald-800">[m
+                                 Lihat Detail[m
+                             </a>[m
+[31m-                            @if (auth()->user()->role === 'admin')[m
+[32m+[m[32m                            @if (auth()->check() && auth()->user()->role === 'admin')[m
+                                 <a href="{{ route('buku.edit', $item->id) }}" class="rounded-2xl bg-emerald-50 px-4 py-3 text-center text-xs font-bold text-emerald-700 transition duration-200 hover:bg-emerald-600 hover:text-white">[m
+                                     Edit[m
+                                 </a>[m
+[36m@@ -260,4 +384,4 @@[m
+     </div>[m
+ </div>[m
+ [m
+[31m-@endsection[m
+\ No newline at end of file[m
+[32m+[m[32m@endsection[m
+[1mdiff --git a/routes/web.php b/routes/web.php[m
+[1mindex 4aa5db5..c1092d3 100644[m
+[1m--- a/routes/web.php[m
+[1m+++ b/routes/web.php[m
+[36m@@ -6,6 +6,7 @@[m
+ use App\Http\Controllers\AuthController;[m
+ use App\Http\Controllers\AnggotaController;[m
+ use App\Http\Controllers\BukuController;[m
+[32m+[m[32muse App\Http\Controllers\BukuImportController;[m
+ use App\Http\Controllers\DashboardController;[m
+ use App\Http\Controllers\KategoriController;[m
+ use App\Http\Controllers\PeminjamanController;[m
+[36m@@ -251,6 +252,10 @@[m
+         ])->name('buku.destroy');[m
+ [m
+ [m
+[32m+[m[32m        Route::post('/buku/import', [BukuImportController::class, 'import'])[m
+[32m+[m[32m            ->name('buku.import');[m
+[32m+[m
+[32m+[m
+         /*[m
+         |--------------------------------------------------------------------------[m
+         | CRUD KATEGORI[m

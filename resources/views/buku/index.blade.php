@@ -28,23 +28,147 @@
                     </p>
                 </div>
 
-                @if (auth()->user()->role === 'admin')
-                    <div class="shrink-0">
-                        <a href="{{ route('buku.create') }}" class="inline-flex items-center gap-2 rounded-2xl bg-emerald-500 px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-emerald-900/40 transition duration-300 hover:scale-105 hover:bg-emerald-400">
+                {{-- TOMBOL ADMIN --}}
+                @if (auth()->check() && auth()->user()->role === 'admin')
+                    <div class="flex shrink-0 flex-wrap items-center gap-3">
+
+                        {{-- Tombol Import Excel --}}
+                        <button
+                            type="button"
+                            onclick="document.getElementById('form-import-buku').classList.toggle('hidden')"
+                            aria-controls="form-import-buku"
+                            class="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/30 bg-white/10 px-5 py-3.5 text-sm font-bold text-white backdrop-blur-sm transition duration-300 hover:bg-white/20"
+                        >
+                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1M12 12V4m0 0L8 8m4-4l4 4"></path>
+                            </svg>
+                            Import Excel
+                        </button>
+
+                        {{-- Tombol Tambah Buku Baru --}}
+                        <a href="{{ route('buku.create') }}"
+                           class="inline-flex items-center gap-2 rounded-2xl bg-emerald-500 px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-emerald-900/40 transition duration-300 hover:scale-105 hover:bg-emerald-400">
                             <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path>
                             </svg>
                             Tambah Buku Baru
                         </a>
+
                     </div>
                 @endif
             </div>
         </div>
 
         {{-- ========================================================= --}}
+        {{-- NOTIFIKASI IMPORT --}}
+        {{-- ========================================================= --}}
+        @if (session('success'))
+            <div class="mb-6 flex items-start gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800">
+                <span class="text-lg">✅</span>
+                <p>{{ session('success') }}</p>
+            </div>
+        @endif
+
+        @if ($errors->has('file'))
+            <div class="mb-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+                @foreach ($errors->get('file') as $error)
+                    <p>{{ $error }}</p>
+                @endforeach
+            </div>
+        @endif
+
+        @if ($errors->has('file_import'))
+            <div class="mb-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+                <p class="mb-2 font-bold">Import buku gagal:</p>
+                @foreach ($errors->get('file_import') as $error)
+                    <p class="mt-1">{{ $error }}</p>
+                @endforeach
+            </div>
+        @endif
+
+        {{-- ========================================================= --}}
+        {{-- FORM IMPORT EXCEL --}}
+        {{-- ========================================================= --}}
+        @if (auth()->check() && auth()->user()->role === 'admin')
+            <div id="form-import-buku"
+                 class="{{ $errors->has('file') || $errors->has('file_import') ? '' : 'hidden' }} mb-8 overflow-hidden rounded-3xl border border-emerald-200 bg-white shadow-sm">
+
+                <div class="border-b border-emerald-100 bg-emerald-50/70 px-6 py-5">
+                    <h2 class="text-lg font-extrabold text-emerald-950">
+                        Import Koleksi Buku
+                    </h2>
+                    <p class="mt-1 text-sm text-slate-600">
+                        Masukkan banyak data buku sekaligus menggunakan file Excel atau CSV.
+                    </p>
+                </div>
+
+                <div class="p-6">
+                    <form action="{{ route('buku.import') }}"
+                          method="POST"
+                          enctype="multipart/form-data"
+                          class="space-y-5">
+
+                        @csrf
+
+                        <div>
+                            <label for="file" class="mb-2 block text-sm font-bold text-slate-700">
+                                Pilih File Excel / CSV
+                            </label>
+
+                            <input
+                                type="file"
+                                id="file"
+                                name="file"
+                                accept=".xlsx,.xls,.csv"
+                                required
+                                class="block w-full rounded-2xl border border-slate-200 bg-slate-50 p-3 text-sm text-slate-700 file:mr-4 file:rounded-xl file:border-0 file:bg-emerald-100 file:px-4 file:py-2 file:font-bold file:text-emerald-800 hover:file:bg-emerald-200 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/10"
+                            >
+
+                            <p class="mt-2 text-xs text-slate-500">
+                                Format yang didukung: .xlsx, .xls, atau .csv. Ukuran maksimal 10 MB.
+                            </p>
+                        </div>
+
+                        <div class="rounded-2xl border border-amber-200 bg-amber-50 p-4">
+                            <p class="text-sm font-bold text-amber-900">
+                                Perhatikan format data sebelum import
+                            </p>
+                            <p class="mt-1 text-sm leading-6 text-amber-800">
+                                File harus memiliki kolom kode_buku, judul_buku, pengarang,
+                                penerbit, tahun_terbit, stok, nama_kategori, dan deskripsi.
+                                Nama kategori harus sudah tersedia di database. Kode buku harus unik.
+                            </p>
+                        </div>
+
+                        <div class="flex flex-wrap gap-3">
+                            <button
+                                type="submit"
+                                class="inline-flex items-center justify-center gap-2 rounded-2xl bg-emerald-600 px-6 py-3 text-sm font-bold text-white shadow-md transition hover:bg-emerald-700"
+                            >
+                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1M12 12V4m0 0L8 8m4-4l4 4"></path>
+                                </svg>
+                                Import Sekarang
+                            </button>
+
+                            <button
+                                type="button"
+                                onclick="document.getElementById('form-import-buku').classList.add('hidden')"
+                                class="rounded-2xl border border-slate-200 px-6 py-3 text-sm font-bold text-slate-600 transition hover:bg-slate-50"
+                            >
+                                Batal
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        @endif
+
+        {{-- ========================================================= --}}
         {{-- STATISTIK BUKU --}}
         {{-- ========================================================= --}}
         <div class="mb-8 grid gap-5 sm:grid-cols-3">
+
             {{-- TOTAL KOLEKSI --}}
             <div class="group relative overflow-hidden rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-emerald-300 hover:shadow-xl hover:shadow-emerald-500/10">
                 <div class="absolute -right-8 -top-8 h-28 w-28 rounded-full bg-emerald-400/10 blur-2xl transition-all duration-500 group-hover:scale-150 group-hover:bg-emerald-400/20"></div>
@@ -57,7 +181,7 @@
                         </div>
                         <span class="rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-bold tracking-wide text-emerald-700 ring-1 ring-inset ring-emerald-600/20">KOLEKSI</span>
                     </div>
-                    <p class="text-xs font-semibold tracking-wide uppercase text-slate-400">Total Koleksi</p>
+                    <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Total Koleksi</p>
                     <h2 class="mt-1 text-4xl font-black tracking-tight text-emerald-950">{{ $totalBuku }}</h2>
                     <p class="mt-3 text-xs text-slate-500">Seluruh buku di perpustakaan</p>
                 </div>
@@ -75,7 +199,7 @@
                         </div>
                         <span class="rounded-full bg-teal-50 px-3 py-1 text-[11px] font-bold tracking-wide text-teal-700 ring-1 ring-inset ring-teal-600/20">TERSEDIA</span>
                     </div>
-                    <p class="text-xs font-semibold tracking-wide uppercase text-slate-400">Buku Tersedia</p>
+                    <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Buku Tersedia</p>
                     <h2 class="mt-1 text-4xl font-black tracking-tight text-emerald-950">{{ $totalBukuTersedia }}</h2>
                     <p class="mt-3 text-xs text-slate-500">Stok dapat dipinjam</p>
                 </div>
@@ -93,7 +217,7 @@
                         </div>
                         <span class="rounded-full bg-red-50 px-3 py-1 text-[11px] font-bold tracking-wide text-red-700 ring-1 ring-inset ring-red-600/20">STOK HABIS</span>
                     </div>
-                    <p class="text-xs font-semibold tracking-wide uppercase text-slate-400">Buku Habis</p>
+                    <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Buku Habis</p>
                     <h2 class="mt-1 text-4xl font-black tracking-tight text-emerald-950">{{ $totalBukuHabis }}</h2>
                     <p class="mt-3 text-xs text-slate-500">Stok dalam perbaikan/kosong</p>
                 </div>
@@ -129,7 +253,7 @@
                     <button type="submit" class="flex-1 rounded-2xl bg-emerald-600 px-5 py-3.5 text-sm font-bold text-white shadow-md shadow-emerald-600/20 transition hover:bg-emerald-700 hover:shadow-lg">
                         Cari Buku
                     </button>
-                    @if(request('search') || request('kategori_id'))
+                    @if (request('search') || request('kategori_id'))
                         <a href="{{ route('buku.index') }}" class="flex items-center justify-center rounded-2xl border border-slate-200 bg-slate-100 px-4 py-3.5 text-xs font-bold text-slate-600 transition hover:bg-slate-200" title="Reset Filter">
                             🔄
                         </a>
@@ -173,7 +297,7 @@
                                     </div>
                                 @endif
 
-                                {{-- FLOATING KATEGORI BADGE (KIRI ATAS) --}}
+                                {{-- FLOATING KATEGORI BADGE --}}
                                 @if ($item->kategori)
                                     <div class="absolute left-3 top-3">
                                         <span class="rounded-full bg-white/90 px-3 py-1 text-[11px] font-extrabold text-emerald-800 shadow-sm backdrop-blur-md">
@@ -182,11 +306,11 @@
                                     </div>
                                 @endif
 
-                                {{-- FLOATING STOK BADGE (KANAN ATAS) --}}
+                                {{-- FLOATING STOK BADGE --}}
                                 <div class="absolute right-3 top-3">
                                     @if ($item->stok > 0)
                                         <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-600/90 px-3 py-1 text-xs font-bold text-white shadow-md backdrop-blur-md">
-                                            <span class="h-1.5 w-1.5 rounded-full bg-white animate-pulse"></span> Tersedia
+                                            <span class="h-1.5 w-1.5 animate-pulse rounded-full bg-white"></span> Tersedia
                                         </span>
                                     @else
                                         <span class="inline-flex items-center gap-1.5 rounded-full bg-red-500/90 px-3 py-1 text-xs font-bold text-white shadow-md backdrop-blur-md">
@@ -204,7 +328,7 @@
 
                                 <div class="mt-2 flex items-center gap-2 text-xs text-slate-400">
                                     <span class="font-medium text-slate-500">✍️ {{ $item->pengarang }}</span>
-                                    @if($item->tahun_terbit)
+                                    @if ($item->tahun_terbit)
                                         <span>•</span>
                                         <span>🗓️ {{ $item->tahun_terbit }}</span>
                                     @endif
@@ -230,7 +354,7 @@
                             <a href="{{ route('buku.show', $item->id) }}" class="flex-1 rounded-2xl bg-slate-100 py-3 text-center text-xs font-bold text-slate-700 transition duration-200 hover:bg-emerald-100 hover:text-emerald-800">
                                 Lihat Detail
                             </a>
-                            @if (auth()->user()->role === 'admin')
+                            @if (auth()->check() && auth()->user()->role === 'admin')
                                 <a href="{{ route('buku.edit', $item->id) }}" class="rounded-2xl bg-emerald-50 px-4 py-3 text-center text-xs font-bold text-emerald-700 transition duration-200 hover:bg-emerald-600 hover:text-white">
                                     Edit
                                 </a>

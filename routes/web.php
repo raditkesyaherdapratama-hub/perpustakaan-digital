@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AnggotaController;
 use App\Http\Controllers\BukuController;
+use App\Http\Controllers\BukuImportController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\PeminjamanController;
@@ -249,6 +250,10 @@ Route::middleware('auth')->group(function () {
             BukuController::class,
             'destroy'
         ])->name('buku.destroy');
+
+
+        Route::post('/buku/import', [BukuImportController::class, 'import'])
+            ->name('buku.import');
 
 
         /*
