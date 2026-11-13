@@ -8,10 +8,25 @@ use Illuminate\Support\Facades\Hash;
 
 class AnggotaController extends Controller
 {
-    
     public function index(Request $request)
     {
-        $query = User::where('role', 'user');
+        return redirect()->route('anggota.murid.index');
+    }
+
+    public function guru(Request $request)
+    {
+        return $this->tampilkanAnggota($request, 'guru');
+    }
+
+    public function murid(Request $request)
+    {
+        return $this->tampilkanAnggota($request, 'murid');
+    }
+
+    private function tampilkanAnggota(Request $request, string $jenis)
+    {
+        $query = User::where('role', 'user')
+            ->where('jenis_anggota', $jenis);
 
         if ($request->filled('search')) {
             $search = $request->search;
@@ -22,43 +37,25 @@ class AnggotaController extends Controller
             });
         }
 
-        $anggotas = $query
-            ->latest()
+        $anggotas = $query->latest()
             ->paginate(10)
             ->withQueryString();
 
-        return view('anggota.index', compact('anggotas'));
+        return view('anggota.index', compact('anggotas', 'jenis'));
     }
 
-
-    
     public function create()
     {
         return view('anggota.create');
     }
 
-
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => [
-                'required',
-                'string',
-                'max:255',
-            ],
-
-            'email' => [
-                'required',
-                'email',
-                'max:255',
-                'unique:users,email',
-            ],
-
-            'password' => [
-                'required',
-                'min:6',
-                'confirmed',
-            ],
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
+            'password' => ['required', 'min:6', 'confirmed'],
+            'jenis_anggota' => ['required', 'in:guru,murid'],
         ]);
 
         User::create([
@@ -66,15 +63,18 @@ class AnggotaController extends Controller
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
             'role' => 'user',
+            'jenis_anggota' => $validated['jenis_anggota'],
         ]);
 
         return redirect()
-            ->route('anggota.index')
+            ->route(
+                $validated['jenis_anggota'] === 'guru'
+                    ? 'anggota.guru.index'
+                    : 'anggota.murid.index'
+            )
             ->with('success', 'Anggota berhasil ditambahkan.');
     }
 
-
-   
     public function show(User $anggota)
     {
         $anggota->load([
@@ -85,58 +85,46 @@ class AnggotaController extends Controller
         return view('anggota.show', compact('anggota'));
     }
 
-
-    
     public function edit(User $anggota)
     {
         return view('anggota.edit', compact('anggota'));
     }
 
-
-    
     public function update(Request $request, User $anggota)
     {
         $validated = $request->validate([
-            'name' => [
-                'required',
-                'string',
-                'max:255',
-            ],
-
+            'name' => ['required', 'string', 'max:255'],
             'email' => [
                 'required',
                 'email',
                 'max:255',
                 'unique:users,email,' . $anggota->id,
             ],
-
-            'password' => [
-                'nullable',
-                'min:6',
-                'confirmed',
-            ],
+            'password' => ['nullable', 'min:6', 'confirmed'],
+            'jenis_anggota' => ['required', 'in:guru,murid'],
         ]);
 
         $data = [
             'name' => $validated['name'],
             'email' => $validated['email'],
+            'jenis_anggota' => $validated['jenis_anggota'],
         ];
 
         if (!empty($validated['password'])) {
-            $data['password'] = Hash::make(
-                $validated['password']
-            );
+            $data['password'] = Hash::make($validated['password']);
         }
 
         $anggota->update($data);
 
         return redirect()
-            ->route('anggota.index')
+            ->route(
+                $anggota->jenis_anggota === 'guru'
+                    ? 'anggota.guru.index'
+                    : 'anggota.murid.index'
+            )
             ->with('success', 'Data anggota berhasil diperbarui.');
     }
 
-
-  
     public function destroy(User $anggota)
     {
         if ($anggota->id === auth()->id()) {
@@ -146,10 +134,16 @@ class AnggotaController extends Controller
             );
         }
 
+        $jenis = $anggota->jenis_anggota;
+
         $anggota->delete();
 
         return redirect()
-            ->route('anggota.index')
+            ->route(
+                $jenis === 'guru'
+                    ? 'anggota.guru.index'
+                    : 'anggota.murid.index'
+            )
             ->with('success', 'Anggota berhasil dihapus.');
     }
 }

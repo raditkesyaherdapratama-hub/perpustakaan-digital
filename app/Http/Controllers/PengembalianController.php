@@ -4,132 +4,201 @@ namespace App\Http\Controllers;
 
 use App\Models\Peminjaman;
 use App\Models\Pengembalian;
-use App\Models\User;
+use App\Models\Buku;
 use App\Notifications\PeminjamanNotification;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class PengembalianController extends Controller
 {
-   
-    public function index()
+    /**
+     * Menampilkan daftar peminjaman, pengambilan,
+     * pengembalian, dan denda.
+     */
+    public function index(Request $request)
     {
-        $peminjamans = Peminjaman::with([
+        $request->validate([
+            'search' => 'nullable|string|max:255',
+            'status' => 'nullable|in:menunggu,menunggu_diambil,dipinjam,dikembalikan,kedaluwarsa',
+            'tanggal_dari' => 'nullable|date',
+            'tanggal_sampai' => 'nullable|date|after_or_equal:tanggal_dari',
+        ]);
+
+        $query = Peminjaman::with([
             'user',
             'buku',
-            'pengembalian' // Pastikan relasi pengembalian dipanggil agar denda terbaca
-        ])
-            ->whereIn('status', ['menunggu', 'dipinjam', 'dikembalikan'])
-            ->latest()
-            ->paginate(10);
+            'pengembalian',
+        ])->whereIn('status', [
+            'menunggu',
+            'menunggu_diambil',
+            'dipinjam',
+            'dikembalikan',
+            'kedaluwarsa',
+        ]);
 
-        return view(
-            'pengembalian.index',
-            compact('peminjamans')
+        // FILTER PENCARIAN
+        if ($request->filled('search')) {
+            $search = $request->search;
+
+            $query->where(function ($q) use ($search) {
+                $q->whereHas('user', function ($userQuery) use ($search) {
+                    $userQuery->where('name', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%");
+                })
+                ->orWhereHas('buku', function ($bukuQuery) use ($search) {
+                    $bukuQuery->where('judul_buku', 'like', "%{$search}%")
+                        ->orWhere('kode_buku', 'like', "%{$search}%");
+                });
+            });
+        }
+
+        // FILTER STATUS
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // FILTER TANGGAL MULAI
+        if ($request->filled('tanggal_dari')) {
+            $query->whereDate('tanggal_pinjam', '>=', $request->tanggal_dari);
+        }
+
+        // FILTER TANGGAL SAMPAI
+        if ($request->filled('tanggal_sampai')) {
+            $query->whereDate('tanggal_pinjam', '<=', $request->tanggal_sampai);
+        }
+
+        $peminjamans = $query
+            ->latest()
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('pengembalian.index', compact('peminjamans'));
+    }
+
+    /**
+     * Method lama dipertahankan agar route yang ada
+     * tidak terganggu.
+     */
+    public function setujui(Peminjaman $peminjaman)
+    {
+        return back()->with(
+            'error',
+            'Gunakan menu Pengajuan Peminjaman untuk menyetujui pengajuan.'
         );
     }
 
-    
-    public function setujui(Peminjaman $peminjaman)
-    {
-        if ($peminjaman->status !== 'menunggu') {
-            return back()->with('error', 'Pengajuan ini sudah diproses sebelumnya.');
-        }
-
-        if ($peminjaman->buku->stok <= 0) {
-            return back()->with('error', 'Stok buku sudah habis. Pengajuan belum dapat disetujui.');
-        }
-
-        DB::transaction(function () use ($peminjaman) {
-            $peminjaman->buku->decrement('stok');
-            $peminjaman->update([
-                'status' => 'dipinjam',
-            ]);
-        });
-
-        $peminjaman->user->notify(new PeminjamanNotification(
-            'Peminjaman Disetujui',
-            'Pengajuan peminjaman buku "' . $peminjaman->buku->judul_buku . '" telah disetujui admin.',
-            'success',
-            route('user.peminjaman')
-        ));
-
-        return back()->with('success', 'Pengajuan peminjaman berhasil disetujui.');
-    }
-
-   
+    /**
+     * Method lama dipertahankan agar route yang ada
+     * tidak terganggu.
+     */
     public function tolak(Peminjaman $peminjaman)
     {
-        if ($peminjaman->status !== 'menunggu') {
-            return back()->with('error', 'Pengajuan ini sudah diproses sebelumnya.');
-        }
-
-        $peminjaman->update([
-            'status' => 'ditolak',
-        ]);
-
-        $peminjaman->user->notify(new PeminjamanNotification(
-            'Peminjaman Ditolak',
-            'Pengajuan peminjaman buku "' . $peminjaman->buku->judul_buku . '" ditolak oleh admin.',
-            'danger',
-            route('user.peminjaman')
-        ));
-
-        return back()->with('success', 'Pengajuan peminjaman berhasil ditolak.');
+        return back()->with(
+            'error',
+            'Gunakan menu Pengajuan Peminjaman untuk menolak pengajuan.'
+        );
     }
 
-    
+    /**
+     * Memproses pengembalian buku dan menghitung denda.
+     */
     public function kembalikan(Peminjaman $peminjaman)
     {
-        if ($peminjaman->status === 'dikembalikan') {
-            return back()->with('error', 'Buku ini sudah dikembalikan.');
-        }
+        $hasil = DB::transaction(function () use ($peminjaman) {
+            $data = Peminjaman::whereKey($peminjaman->id)
+                ->lockForUpdate()
+                ->firstOrFail();
 
-        if ($peminjaman->status !== 'dipinjam') {
-            return back()->with('error', 'Buku ini belum disetujui atau belum berstatus dipinjam.');
-        }
+            if ($data->status === 'dikembalikan') {
+                return 'sudah_dikembalikan';
+            }
 
-        $tanggalKembali = now();
-        $tanggalJatuhTempo = \Carbon\Carbon::parse($peminjaman->tanggal_jatuh_tempo);
-        $keterlambatan = 0;
+            if ($data->status !== 'dipinjam') {
+                return 'status_tidak_valid';
+            }
 
-        if ($tanggalKembali->greaterThan($tanggalJatuhTempo)) {
-            $keterlambatan = $tanggalJatuhTempo->diffInDays($tanggalKembali);
-        }
+            $tanggalKembali = now();
 
-        $denda = $keterlambatan * 1000; // Rp1.000 per hari
+            $tanggalJatuhTempo = Carbon::parse(
+                $data->tanggal_jatuh_tempo
+            )->startOfDay();
 
-        DB::transaction(function () use ($peminjaman, $tanggalKembali, $keterlambatan, $denda) {
+            $tanggalKembaliHari = $tanggalKembali->copy()->startOfDay();
+
+            $keterlambatan = 0;
+
+            if ($tanggalKembaliHari->greaterThan($tanggalJatuhTempo)) {
+                $keterlambatan = (int) $tanggalJatuhTempo
+                    ->diffInDays($tanggalKembaliHari);
+            }
+
+            $denda = $keterlambatan * 1000;
+
             Pengembalian::create([
-                'peminjaman_id' => $peminjaman->id,
+                'peminjaman_id' => $data->id,
                 'tanggal_kembali' => $tanggalKembali->toDateString(),
                 'keterlambatan' => $keterlambatan,
                 'denda' => $denda,
             ]);
 
-            $peminjaman->update([
+            $data->update([
                 'status' => 'dikembalikan',
             ]);
 
-            $peminjaman->buku->increment('stok');
+            Buku::whereKey($data->buku_id)->increment('stok');
+
+            return 'berhasil';
         });
 
-        $peminjaman->user->notify(new PeminjamanNotification(
-            'Buku Dikembalikan',
-            'Buku "' . $peminjaman->buku->judul_buku . '" telah berhasil diproses sebagai pengembalian.',
-            'success',
-            route('user.peminjaman')
-        ));
+        if ($hasil === 'sudah_dikembalikan') {
+            return back()->with(
+                'error',
+                'Buku ini sudah dikembalikan.'
+            );
+        }
 
-        return back()->with('success', 'Buku berhasil dikembalikan.');
+        if ($hasil === 'status_tidak_valid') {
+            return back()->with(
+                'error',
+                'Buku belum diambil atau status peminjaman tidak valid.'
+            );
+        }
+
+        $peminjamanTerbaru = Peminjaman::with([
+            'user',
+            'buku',
+        ])->findOrFail($peminjaman->id);
+
+        $peminjamanTerbaru->user->notify(
+            new PeminjamanNotification(
+                'Buku Dikembalikan',
+                'Buku "' .
+                    $peminjamanTerbaru->buku->judul_buku .
+                    '" telah berhasil diproses sebagai pengembalian.',
+                'success',
+                route('user.peminjaman')
+            )
+        );
+
+        return back()->with(
+            'success',
+            'Buku berhasil dikembalikan.'
+        );
     }
 
-    
+    /**
+     * Melunasi denda pengembalian.
+     */
     public function lunasiDenda(Pengembalian $pengembalian)
     {
         $pengembalian->update([
             'denda' => 0,
         ]);
 
-        return back()->with('success', 'Denda berhasil diselesaikan dan dilunasi.');
+        return back()->with(
+            'success',
+            'Denda berhasil diselesaikan dan dilunasi.'
+        );
     }
 }

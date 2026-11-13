@@ -1,3 +1,4 @@
+```blade
 @extends('layouts.app')
 
 @section('content')
@@ -44,7 +45,6 @@
 
                 {{-- SYSTEM STATUS --}}
                 <div class="shrink-0">
-
                     <div class="inline-flex items-center gap-3 rounded-2xl border border-white/10 bg-white/10 px-4 py-3 backdrop-blur-xl shadow-inner">
 
                         <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-400/15 text-emerald-300 ring-1 ring-inset ring-emerald-300/10">
@@ -62,14 +62,11 @@
 
                             <div class="mt-1 flex items-center gap-2">
                                 <span class="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_7px_rgba(52,211,153,0.9)]"></span>
-                                <p class="text-xs font-bold text-white">
-                                    Sistem Aktif
-                                </p>
+                                <p class="text-xs font-bold text-white">Sistem Aktif</p>
                             </div>
                         </div>
 
                     </div>
-
                 </div>
 
             </div>
@@ -80,7 +77,6 @@
         {{-- ALERTS --}}
         {{-- ========================================================= --}}
         @if (session('success'))
-
             <div class="mb-6 flex items-center gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3.5 shadow-sm">
 
                 <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-500 text-white shadow-sm shadow-emerald-500/20">
@@ -93,14 +89,12 @@
                     <p class="text-[10px] font-bold uppercase tracking-wider text-emerald-900">
                         Berhasil
                     </p>
-
                     <p class="mt-0.5 text-xs font-medium text-emerald-700">
                         {{ session('success') }}
                     </p>
                 </div>
 
             </div>
-
         @endif
 
 
@@ -115,7 +109,6 @@
                 <div class="absolute -right-10 -top-10 h-28 w-28 rounded-full bg-emerald-400/10 blur-2xl transition duration-500 group-hover:scale-125"></div>
 
                 <div class="relative z-10">
-
                     <div class="mb-5 flex items-center justify-between">
 
                         <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-600 to-teal-400 text-white shadow-md shadow-emerald-500/20 transition duration-300 group-hover:scale-105">
@@ -129,7 +122,6 @@
                         <span class="rounded-full bg-emerald-50 px-2.5 py-1 text-[9px] font-bold tracking-wider text-emerald-700 ring-1 ring-inset ring-emerald-600/15">
                             PEMINJAMAN
                         </span>
-
                     </div>
 
                     <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">
@@ -146,7 +138,6 @@
                             Seluruh transaksi peminjaman
                         </p>
                     </div>
-
                 </div>
             </div>
 
@@ -157,7 +148,6 @@
                 <div class="absolute -right-10 -top-10 h-28 w-28 rounded-full bg-blue-400/10 blur-2xl transition duration-500 group-hover:scale-125"></div>
 
                 <div class="relative z-10">
-
                     <div class="mb-5 flex items-center justify-between">
 
                         <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-indigo-400 text-white shadow-md shadow-blue-500/20 transition duration-300 group-hover:scale-105">
@@ -171,7 +161,6 @@
                         <span class="rounded-full bg-blue-50 px-2.5 py-1 text-[9px] font-bold tracking-wider text-blue-700 ring-1 ring-inset ring-blue-600/15">
                             AKTIF
                         </span>
-
                     </div>
 
                     <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">
@@ -188,7 +177,6 @@
                             Buku masih berada pada anggota
                         </p>
                     </div>
-
                 </div>
             </div>
 
@@ -200,7 +188,6 @@
                 <div class="absolute -bottom-12 -left-8 h-24 w-24 rounded-full bg-teal-500/10 blur-2xl"></div>
 
                 <div class="relative z-10">
-
                     <div class="mb-5 flex items-center justify-between">
 
                         <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-white/10 text-emerald-400 ring-1 ring-inset ring-white/10 backdrop-blur-md transition duration-300 group-hover:scale-105">
@@ -214,7 +201,6 @@
                         <span class="rounded-full border border-emerald-400/20 bg-emerald-500/10 px-2.5 py-1 text-[9px] font-bold tracking-wider text-emerald-300">
                             SELESAI
                         </span>
-
                     </div>
 
                     <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">
@@ -231,10 +217,123 @@
                             Transaksi telah selesai
                         </p>
                     </div>
-
                 </div>
             </div>
 
+        </div>
+
+
+        {{-- ========================================================= --}}
+        {{-- FILTER LAPORAN --}}
+        {{-- ========================================================= --}}
+        <div class="mb-6 overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-5 shadow-[0_5px_20px_rgba(15,23,42,0.04)] sm:p-6">
+
+            <div class="mb-5">
+                <h2 class="text-base font-extrabold text-slate-900">
+                    Filter Laporan
+                </h2>
+                <p class="mt-1 text-xs text-slate-500">
+                    Cari dan sesuaikan data laporan berdasarkan kebutuhan.
+                </p>
+            </div>
+
+            <form action="{{ route('laporan.index') }}" method="GET">
+
+                <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+
+                    {{-- PENCARIAN --}}
+                    <div class="lg:col-span-2">
+                        <label for="search" class="mb-1.5 block text-xs font-bold text-slate-600">
+                            Pencarian
+                        </label>
+
+                        <input
+                            type="text"
+                            id="search"
+                            name="search"
+                            value="{{ request('search') }}"
+                            placeholder="Nama peminjam, email, judul, atau kode buku..."
+                            class="w-full rounded-xl border border-slate-200 px-4 py-3 text-xs outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
+                        >
+                    </div>
+
+                    {{-- STATUS --}}
+                    <div>
+                        <label for="status" class="mb-1.5 block text-xs font-bold text-slate-600">
+                            Status Peminjaman
+                        </label>
+
+                        <select
+                            id="status"
+                            name="status"
+                            class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-xs outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
+                        >
+                            <option value="">Semua Status</option>
+                            <option value="menunggu" @selected(request('status') === 'menunggu')>Menunggu</option>
+                            <option value="menunggu_diambil" @selected(request('status') === 'menunggu_diambil')>Menunggu Diambil</option>
+                            <option value="dipinjam" @selected(request('status') === 'dipinjam')>Dipinjam</option>
+                            <option value="dikembalikan" @selected(request('status') === 'dikembalikan')>Dikembalikan</option>
+                            <option value="ditolak" @selected(request('status') === 'ditolak')>Ditolak</option>
+                            <option value="kedaluwarsa" @selected(request('status') === 'kedaluwarsa')>Kedaluwarsa</option>
+                        </select>
+                    </div>
+
+                    {{-- TANGGAL MULAI --}}
+                    <div>
+                        <label for="tanggal_mulai" class="mb-1.5 block text-xs font-bold text-slate-600">
+                            Tanggal Mulai
+                        </label>
+
+                        <input
+                            type="date"
+                            id="tanggal_mulai"
+                            name="tanggal_mulai"
+                            value="{{ request('tanggal_mulai') }}"
+                            class="w-full rounded-xl border border-slate-200 px-4 py-3 text-xs outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
+                        >
+                    </div>
+
+                    {{-- TANGGAL AKHIR --}}
+                    <div>
+                        <label for="tanggal_akhir" class="mb-1.5 block text-xs font-bold text-slate-600">
+                            Tanggal Akhir
+                        </label>
+
+                        <input
+                            type="date"
+                            id="tanggal_akhir"
+                            name="tanggal_akhir"
+                            value="{{ request('tanggal_akhir') }}"
+                            class="w-full rounded-xl border border-slate-200 px-4 py-3 text-xs outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
+                        >
+                    </div>
+
+                </div>
+
+                <div class="mt-5 flex flex-wrap items-center gap-2">
+
+                    <button
+                        type="submit"
+                        class="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-2.5 text-xs font-bold text-white transition hover:bg-emerald-700"
+                    >
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 21l-5.2-5.2m2.2-5.3a7.5 7.5 0 11-15 0 7.5 7.5 0 0115 0z">
+                            </path>
+                        </svg>
+                        Terapkan Filter
+                    </button>
+
+                    <a
+                        href="{{ route('laporan.index') }}"
+                        class="inline-flex items-center rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-xs font-bold text-slate-600 transition hover:bg-slate-50"
+                    >
+                        Reset
+                    </a>
+
+                </div>
+
+            </form>
         </div>
 
 
@@ -289,21 +388,33 @@
                     </div>
 
 
+                    {{-- EXPORT EXCEL --}}
+                    <a
+                        href="{{ route('laporan.export', request()->query()) }}"
+                        class="inline-flex items-center gap-2 rounded-xl bg-green-700 px-4 py-2.5 text-xs font-bold text-white shadow-md shadow-green-700/20 transition duration-200 hover:-translate-y-0.5 hover:bg-green-800"
+                    >
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 16V4m0 0L8 8m4-4l4 4M4 16v3a1 1 0 001 1h14a1 1 0 001-1v-3">
+                            </path>
+                        </svg>
+                        Export Excel
+                    </a>
+
+
                     {{-- CETAK --}}
                     <a
                         href="{{ route('laporan.print', request()->query()) }}"
                         target="_blank"
                         class="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-xs font-bold text-white shadow-md shadow-emerald-600/20 transition duration-200 hover:-translate-y-0.5 hover:bg-emerald-700 hover:shadow-lg hover:shadow-emerald-600/20"
                     >
-
                         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z">
+                                d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z">
                             </path>
                         </svg>
 
                         Cetak Laporan
-
                     </a>
 
                 </div>
@@ -319,31 +430,12 @@
                     <thead class="border-b border-slate-100 bg-slate-50/80 text-[10px] font-bold uppercase tracking-[0.12em] text-slate-500">
 
                         <tr>
-
-                            <th class="px-6 py-3.5">
-                                #
-                            </th>
-
-                            <th class="px-6 py-3.5">
-                                Peminjam
-                            </th>
-
-                            <th class="px-6 py-3.5">
-                                Buku
-                            </th>
-
-                            <th class="px-6 py-3.5">
-                                Tanggal Pinjam
-                            </th>
-
-                            <th class="px-6 py-3.5">
-                                Jatuh Tempo
-                            </th>
-
-                            <th class="px-6 py-3.5 text-center">
-                                Status
-                            </th>
-
+                            <th class="px-6 py-3.5">#</th>
+                            <th class="px-6 py-3.5">Peminjam</th>
+                            <th class="px-6 py-3.5">Buku</th>
+                            <th class="px-6 py-3.5">Tanggal Pinjam</th>
+                            <th class="px-6 py-3.5">Jatuh Tempo</th>
+                            <th class="px-6 py-3.5 text-center">Status</th>
                         </tr>
 
                     </thead>
@@ -357,13 +449,11 @@
 
                                 {{-- NOMOR --}}
                                 <td class="px-6 py-4 font-semibold text-slate-400">
-
                                     @if(isset($peminjaman) && method_exists($peminjaman, 'firstItem'))
                                         {{ $peminjaman->firstItem() + $loop->index }}
                                     @else
                                         {{ $loop->iteration }}
                                     @endif
-
                                 </td>
 
 
@@ -377,7 +467,6 @@
                                         </div>
 
                                         <div class="min-w-0">
-
                                             <p class="max-w-[150px] truncate text-sm font-bold text-slate-800">
                                                 {{ $laporan->user->name ?? '-' }}
                                             </p>
@@ -385,7 +474,6 @@
                                             <p class="max-w-[150px] truncate text-[10px] text-slate-400">
                                                 {{ $laporan->user->email ?? '-' }}
                                             </p>
-
                                         </div>
 
                                     </div>
@@ -419,7 +507,6 @@
                                         </div>
 
                                         <div class="min-w-0">
-
                                             <p class="max-w-[200px] truncate text-sm font-bold text-slate-800">
                                                 {{ $laporan->buku->judul_buku ?? '-' }}
                                             </p>
@@ -430,7 +517,6 @@
                                                     {{ $laporan->buku->kode_buku ?? '-' }}
                                                 </span>
                                             </p>
-
                                         </div>
 
                                     </div>
@@ -479,9 +565,7 @@
 
                                     @else
 
-                                        <span class="text-slate-400">
-                                            -
-                                        </span>
+                                        <span class="text-slate-400">-</span>
 
                                     @endif
 
@@ -534,7 +618,6 @@
                         @empty
 
                             <tr>
-
                                 <td colspan="6" class="px-6 py-16 text-center">
 
                                     <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-50 text-2xl text-emerald-600 ring-1 ring-inset ring-emerald-600/10">
@@ -550,7 +633,6 @@
                                     </p>
 
                                 </td>
-
                             </tr>
 
                         @endforelse
@@ -566,13 +648,13 @@
             @if (isset($peminjaman) && method_exists($peminjaman, 'links'))
 
                 <div class="border-t border-slate-100 bg-slate-50/50 px-6 py-4">
-                    {{ $peminjaman->links() }}
+                    {{ $peminjaman->withQueryString()->links() }}
                 </div>
 
             @elseif (isset($laporans) && method_exists($laporans, 'links'))
 
                 <div class="border-t border-slate-100 bg-slate-50/50 px-6 py-4">
-                    {{ $laporans->links() }}
+                    {{ $laporans->withQueryString()->links() }}
                 </div>
 
             @endif
@@ -590,13 +672,11 @@
             </div>
 
             <p class="text-[11px] leading-5 text-slate-500">
-
                 Gunakan data laporan sebagai bahan pemantauan aktivitas peminjaman dan pengembalian buku di perpustakaan
 
                 <span class="font-bold text-emerald-700">
                     MI Al Falahiyyah Rajeg.
                 </span>
-
             </p>
 
         </div>

@@ -1,3 +1,4 @@
+
 @extends('layouts.app')
 
 @section('content')
@@ -8,6 +9,21 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+
+@php
+    $jenis = $jenis ?? 'murid';
+
+    $judul = $jenis === 'guru' ? 'Data Guru' : 'Data Murid';
+
+    $deskripsi = $jenis === 'guru'
+        ? 'Kelola data guru yang terdaftar sebagai anggota perpustakaan.'
+        : 'Kelola data murid yang terdaftar sebagai anggota perpustakaan.';
+
+    $routeAnggota = $jenis === 'guru'
+        ? 'anggota.guru.index'
+        : 'anggota.murid.index';
+@endphp
 
 
 <div class="min-h-screen bg-slate-50 px-4 py-6 font-['Inter',sans-serif] sm:px-6 lg:px-8">
@@ -35,13 +51,13 @@
 
 
                     <h1 class="text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
-                        Kelola Anggota
+                        {{ $judul }}
                         <span class="ml-1">👥</span>
                     </h1>
 
 
                     <p class="mt-2 max-w-xl text-sm leading-6 text-emerald-100">
-                        Kelola data anggota perpustakaan secara mudah, cepat, dan terorganisir.
+                        {{ $deskripsi }}
                     </p>
 
                 </div>
@@ -78,18 +94,8 @@
 
                 <div class="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-emerald-500 text-white">
 
-                    <svg
-                        class="h-4 w-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                    >
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2.5"
-                            d="M5 13l4 4L19 7"
-                        />
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
                     </svg>
 
                 </div>
@@ -123,18 +129,8 @@
 
                 <div class="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-red-500 text-white">
 
-                    <svg
-                        class="h-4 w-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                    >
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2.5"
-                            d="M6 18L18 6M6 6l12 12"
-                        />
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
 
                 </div>
@@ -165,7 +161,7 @@
         <div class="mb-6 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
 
             <form
-                action="{{ route('anggota.index') }}"
+                action="{{ route($routeAnggota) }}"
                 method="GET"
                 class="flex flex-col gap-3 sm:flex-row"
             >
@@ -174,18 +170,8 @@
 
                     <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
 
-                        <svg
-                            class="h-4.5 w-4.5"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                            />
+                        <svg class="h-4.5 w-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                         </svg>
 
                     </div>
@@ -195,7 +181,7 @@
                         type="text"
                         name="search"
                         value="{{ request('search') }}"
-                        placeholder="Cari nama atau email anggota..."
+                        placeholder="Cari nama atau email {{ strtolower($jenis) }}..."
                         class="w-full rounded-xl border border-slate-200 bg-slate-50 py-3 pl-11 pr-4 text-sm font-medium text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-100"
                     >
 
@@ -213,7 +199,7 @@
                 @if(request('search'))
 
                     <a
-                        href="{{ route('anggota.index') }}"
+                        href="{{ route($routeAnggota) }}"
                         class="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-5 py-3 text-xs font-bold text-slate-600 transition duration-200 hover:border-red-200 hover:bg-red-50 hover:text-red-600"
                     >
                         Reset
@@ -242,18 +228,8 @@
 
                     <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
 
-                        <svg
-                            class="h-5 w-5"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
-                            />
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
                         </svg>
 
                     </div>
@@ -262,11 +238,11 @@
                     <div>
 
                         <h2 class="text-base font-bold text-slate-900">
-                            Daftar Anggota
+                            Daftar {{ $jenis === 'guru' ? 'Guru' : 'Murid' }}
                         </h2>
 
                         <p class="mt-0.5 text-xs text-slate-500">
-                            Data anggota perpustakaan MI Al Falahiyyah
+                            Data {{ strtolower($judul) }} perpustakaan MI Al Falahiyyah
                         </p>
 
                     </div>
@@ -309,7 +285,7 @@
                             </th>
 
                             <th class="px-5 py-3.5 text-[10px] font-bold uppercase tracking-wider text-slate-500">
-                                Nama Anggota
+                                Nama {{ $jenis === 'guru' ? 'Guru' : 'Murid' }}
                             </th>
 
                             <th class="px-5 py-3.5 text-[10px] font-bold uppercase tracking-wider text-slate-500">
@@ -367,7 +343,7 @@
                                             </p>
 
                                             <p class="mt-0.5 text-[11px] text-slate-400">
-                                                Anggota Perpustakaan
+                                                {{ $jenis === 'guru' ? 'Guru' : 'Murid' }} Perpustakaan
                                             </p>
 
                                         </div>
@@ -396,18 +372,8 @@
 
                                     <div class="inline-flex items-center gap-2 text-xs font-medium text-slate-600">
 
-                                        <svg
-                                            class="h-4 w-4 text-slate-400"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            viewBox="0 0 24 24"
-                                        >
-                                            <path
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                stroke-width="2"
-                                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                                            />
+                                        <svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                                         </svg>
 
                                         {{ $anggota->created_at->format('d M Y') }}
@@ -489,12 +455,12 @@
 
 
                                     <h3 class="mt-4 text-sm font-bold text-slate-800">
-                                        Belum Ada Anggota
+                                        Belum Ada {{ $jenis === 'guru' ? 'Guru' : 'Murid' }}
                                     </h3>
 
 
                                     <p class="mt-1 text-xs text-slate-400">
-                                        Belum terdapat data anggota di perpustakaan.
+                                        Belum terdapat data {{ strtolower($judul) }} di perpustakaan.
                                     </p>
 
 
@@ -550,7 +516,7 @@
 
             <p class="text-xs leading-5 text-slate-500">
 
-                Data anggota digunakan untuk mengelola aktivitas perpustakaan.
+                Data {{ strtolower($judul) }} digunakan untuk mengelola aktivitas perpustakaan.
                 Pastikan informasi anggota selalu diperbarui agar
 
                 <span class="font-semibold text-emerald-700">

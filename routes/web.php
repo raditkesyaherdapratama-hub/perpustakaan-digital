@@ -1,3 +1,4 @@
+
 <?php
 
 use Illuminate\Support\Facades\Route;
@@ -219,6 +220,11 @@ Route::middleware('auth')->group(function () {
             'print'
         ])->name('laporan.print');
 
+        Route::get('/laporan/export', [
+            LaporanController::class,
+            'export'
+        ])->name('laporan.export');
+
 
         /*
         |--------------------------------------------------------------------------
@@ -299,6 +305,18 @@ Route::middleware('auth')->group(function () {
         |--------------------------------------------------------------------------
         */
 
+        // DATA GURU
+        Route::get('/anggota/guru', [
+            AnggotaController::class,
+            'guru'
+        ])->name('anggota.guru.index');
+
+        // DATA MURID
+        Route::get('/anggota/murid', [
+            AnggotaController::class,
+            'murid'
+        ])->name('anggota.murid.index');
+
         Route::get('/anggota', [
             AnggotaController::class,
             'index'
@@ -349,6 +367,12 @@ Route::middleware('auth')->group(function () {
     ])->name('buku.show');
 
 
+    Route::post(
+        '/pengajuan-peminjaman/{peminjaman}/konfirmasi-pengambilan',
+        [PengajuanPeminjamanController::class, 'konfirmasiPengambilan']
+        )->name('pengajuan.konfirmasiPengambilan');
+
+
     /*
     |--------------------------------------------------------------------------
     | USER DASHBOARD
@@ -356,6 +380,11 @@ Route::middleware('auth')->group(function () {
     */
 
     Route::middleware('role:user')->group(function () {
+
+        Route::patch(
+            '/user/peminjaman/{peminjaman}/batalkan',
+            [PeminjamanController::class, 'batalkan']
+            )->name('user.peminjaman.batalkan');
 
         Route::get('/user/dashboard', [
             DashboardController::class,
